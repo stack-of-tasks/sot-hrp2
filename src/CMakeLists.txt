@@ -45,21 +45,27 @@ ENDFUNCTION()
 COMPILE_PLUGIN(dynamic-hrp2_14 dynamic-hrp2_14.cc DynamicHrp2_14)
 COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
 
+
+CONFIG_FILES(dynamic_graph/sot/hrp2_10/robot.py)
+CONFIG_FILES(dynamic_graph/sot/hrp2_14/robot.py)
+
 # Install Python files.
 SET(PYTHON_MODULE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_graph/sot/hrp2)
 SET(PYTHON_MODULE_BUILD_DIR
   ${CMAKE_CURRENT_BINARY_DIR}/dynamic_graph/sot/hrp2)
 
+SET(PYTHON_MODULE dynamic_graph/sot/hrp2)
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "hrp2.py" )
+
 SET(FILES __init__.py robot.py)
 # Install dynamic_graph.sot.hrp2_14
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2_14)
-FOREACH(FILE ${FILES})
-  PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "${FILE}" )
-ENDFOREACH()
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
+PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" ${PYTHON_SITELIB})
 
 # Install dynamic_graph.sot.hrp2_10
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2_10)
-FOREACH(FILE ${FILES})
-  PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "${FILE}" )
-ENDFOREACH()
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
+PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" ${PYTHON_SITELIB})

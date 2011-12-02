@@ -1,0 +1,50 @@
+# -*- coding: utf-8 -*-
+# Copyright 2011, Florent Lamiraux, Thomas Moulard, JRL, CNRS/AIST
+#
+# This file is part of dynamic-graph.
+# dynamic-graph is free software: you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# dynamic-graph is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Lesser Public License for more details.  You should have
+# received a copy of the GNU Lesser General Public License along with
+# dynamic-graph. If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
+from dynamic_graph.sot.hrp2 import Hrp2
+
+hrp2_10_pkgdatarootdir = "@HRP2_10_PKGDATAROOTDIR@"
+
+class Robot (Hrp2):
+    """
+    This class instanciates LAAS Hrp2 robot
+    """
+    halfSitting = (
+        # Free flyer
+        0., 0., 0.648702, 0., 0. , 0.,
+
+        # Legs
+        0., 0., -0.453786, 0.872665, -0.418879, 0.,
+        0., 0., -0.453786, 0.872665, -0.418879, 0.,
+
+        # Chest and head
+        0., 0., 0., 0.,
+
+        # Arms
+        0.261799, -0.17453, 0., -0.523599, 0., 0., 0.1, 0.261799,
+        0.261799, 0.17453,  0., -0.523599, 0., 0., 0.1, 0.261799,
+        )
+
+    def __init__(self, name,
+                 modelDir = hrp2_10_pkgdatarootdir,
+                 xmlDir = hrp2_10_pkgdatarootdir,
+                 device = None,
+                 tracer = None):
+        Hrp2.__init__(self, name, modelDir, xmlDir, device, DynamicHrp2_10,
+                      tracer)
+
+__all__ = [Robot]
