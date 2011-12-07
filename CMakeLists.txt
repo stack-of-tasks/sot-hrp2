@@ -20,6 +20,7 @@ INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/lapack.cmake)
 INCLUDE(cmake/cpack.cmake)
 
+
 SET(PROJECT_NAME sot-hrp2)
 SET(PROJECT_DESCRIPTION "dynamic-graph package for HRP-2 robot")
 SET(PROJECT_URL "http://github.com/laas/sot-hrp2")

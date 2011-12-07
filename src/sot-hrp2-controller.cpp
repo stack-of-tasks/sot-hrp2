@@ -170,7 +170,7 @@ void SoTHRP2Controller::getControl(map<string,dgsot::ControlValues> &controlOut)
     baseff[i*4+3] = freeFlyerPose () (i, 3);
   for(unsigned i = 0;i < 3; ++i)
     for(unsigned j = 0; j < 3; ++j)
-      baseff[i * 3 + j] = freeFlyerPose () (i, j);
+      baseff[i * 4 + j] = freeFlyerPose () (i, j);
 
   controlOut["baseff"].setValues(baseff);
   
