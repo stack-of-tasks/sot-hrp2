@@ -79,6 +79,6 @@ ADD_LIBRARY(sot-hrp2-controller
 # Link the dynamic library containing the SoT with its dependencies.
 PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "dynamic-graph")
 PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "sot-core")
-#PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "dynamic-graph-corba")
+PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "dynamic-graph-corba")
 
 INSTALL(TARGETS sot-hrp2-controller DESTINATION lib/${ROBOTNAME})

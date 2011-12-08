@@ -32,11 +32,14 @@ SoTHRP2Controller::SoTHRP2Controller():
   dgsot::Device(ENTITYNAME),
   timestep_ (TIMESTEP_DEFAULT),
   previousState_ (),
-  robotState_ ("StackOfTasks(" + ENTITYNAME + ")::output(vector)::robotState")
+  robotState_ ("StackOfTasks(" + ENTITYNAME + ")::output(vector)::robotState"),
+  interpreter_()
 
 {
   signalRegistration (robotState_);
   std::cout << __FILE__ << ":" << __FUNCTION__ <<"(#" << __LINE__ << " )" << std::endl;
+  startupPython();
+
 }
 
 SoTHRP2Controller::~SoTHRP2Controller()
@@ -45,8 +48,7 @@ SoTHRP2Controller::~SoTHRP2Controller()
 
 void SoTHRP2Controller::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
-  startupPython();
-
+ 
   vector<double>  anglesIn = SensorsIn["joints"].getValues();
 
   // Read state from motor command
