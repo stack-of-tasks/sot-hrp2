@@ -17,6 +17,7 @@
 from __future__ import print_function
 from dynamic_graph.sot.hrp2 import Hrp2
 import numpy as np
+from dynamic_graph.sot.hrp2.hrp2_14.dynamic_hrp2_14 import DynamicHrp2_14
 
 hrp2_14_pkgdatarootdir = "@HRP2_14_PKGDATAROOTDIR@"
 
@@ -110,6 +111,6 @@ class Robot (Hrp2):
                 ("cameraTopRight",
                  matrixToTuple(cameraTopRightPosition), "gaze"))
 
-        Hrp2.__init__(self, name, modelDir, xmlDir, device, DynamicHrp2, tracer)
+        Hrp2.__init__(self, name, modelDir, xmlDir, device, DynamicHrp2_14, tracer)
 
 __all__ = ["Robot"]
