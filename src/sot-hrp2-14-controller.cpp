@@ -17,7 +17,7 @@
 
 #include <sot/core/debug.hh>
 
-#define ROBOTNAME std::string("HRP2JRL")
+#define ROBOTNAME std::string("HRP2LAAS")
 
 #include "sot-hrp2-14-controller.hh"
 
