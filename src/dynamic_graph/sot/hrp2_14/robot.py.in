@@ -16,6 +16,7 @@
 
 from __future__ import print_function
 from dynamic_graph.sot.hrp2 import Hrp2
+import numpy as np
 
 hrp2_14_pkgdatarootdir = "@HRP2_14_PKGDATAROOTDIR@"
 
