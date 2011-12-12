@@ -58,27 +58,37 @@ SET(PYTHON_MODULE_BUILD_DIR
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2)
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "hrp2.py" )
-
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py" )
 SET(FILES __init__.py robot.py)
+
 # Install dynamic_graph.sot.hrp2_14
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2_14)
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
 PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" ${PYTHON_SITELIB})
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
 
 # Install dynamic_graph.sot.hrp2_10
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2_10)
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
 PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" ${PYTHON_SITELIB})
+PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
 
-# Add the library to wrap the controller of HRP2.
-ADD_LIBRARY(sot-hrp2-controller
+# Add the library to wrap the controller of HRP2-JRL.
+MACRO(build_hrp2_controller robotnumber)
+
+ADD_LIBRARY(sot-hrp2-${robotnumber}-controller
   SHARED
   sot-hrp2-controller.cpp
+  sot-hrp2-${robotnumber}-controller.cpp
 )
 
 # Link the dynamic library containing the SoT with its dependencies.
-PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "dynamic-graph")
-PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "sot-core")
-PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-controller "dynamic-graph-corba")
+PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-${robotnumber}-controller "dynamic-graph")
+PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-${robotnumber}-controller "sot-core")
+PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-${robotnumber}-controller "dynamic-graph-corba")
 
-INSTALL(TARGETS sot-hrp2-controller DESTINATION lib/${ROBOTNAME})
+INSTALL(TARGETS sot-hrp2-${robotnumber}-controller DESTINATION lib)
+ENDMACRO()
+
+build_hrp2_controller("10")
+build_hrp2_controller("14")

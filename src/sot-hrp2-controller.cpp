@@ -20,7 +20,6 @@
 #include "sot-hrp2-controller.hh"
 
 
-#define ENTITYNAME std::string("DLRBiped")
 
 const std::string SoTHRP2Controller::CLASS_NAME = "Device";
 const std::string SoTHRP2Controller::LOG_PYTHON="/tmp/HRP2Controller_python.out";
@@ -28,17 +27,16 @@ const double SoTHRP2Controller::TIMESTEP_DEFAULT = 0.005;
 
 using namespace std;
 
-SoTHRP2Controller::SoTHRP2Controller():
-  dgsot::Device(ENTITYNAME),
+SoTHRP2Controller::SoTHRP2Controller(std::string RobotName):
+  dgsot::Device(RobotName),
   timestep_ (TIMESTEP_DEFAULT),
   previousState_ (),
-  robotState_ ("StackOfTasks(" + ENTITYNAME + ")::output(vector)::robotState"),
+  robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
   interpreter_()
 
 {
   signalRegistration (robotState_);
   std::cout << __FILE__ << ":" << __FUNCTION__ <<"(#" << __LINE__ << " )" << std::endl;
-  startupPython();
 
 }
 
@@ -212,25 +210,7 @@ void SoTHRP2Controller::startupPython()
 	     "    path.append(p)", interpreter_);
   runPython (aof, "path.extend(sys.path)", interpreter_);
   runPython (aof, "sys.path = path", interpreter_);
-  runPython
-    (aof,
-     "from dynamic_graph.sot.openhrp.prologue_dlr_biped import robot, solver",
-     interpreter_);
-  interpreter_.startCorbaServer ("openhrp", "", "stackOfTasks", "");
+  aof.close();
 }
 
-extern "C" 
-{
-  dgsot::AbstractSotExternalInterface * createSotExternalInterface()
-  {
-    return new SoTHRP2Controller;
-  }
-}
 
-extern "C"
-{
-  void destroySotExternalInterface(dgsot::AbstractSotExternalInterface *p)
-  {
-    delete p;
-  }
-}

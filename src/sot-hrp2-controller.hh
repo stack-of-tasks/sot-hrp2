@@ -43,8 +43,8 @@ class SoTHRP2Controller: public
     return CLASS_NAME;							    
   }
 
-  SoTHRP2Controller();
-  ~SoTHRP2Controller();
+  SoTHRP2Controller(std::string RobotName);
+  virtual ~SoTHRP2Controller();
 
   void setupSetSensors(std::map<std::string,dgsot::SensorValues> &sensorsIn);
 
@@ -54,7 +54,7 @@ class SoTHRP2Controller: public
 
   void getControl(std::map<std::string, dgsot::ControlValues> &anglesOut);
 
- private:
+ protected:
   // Update output port with the control computed from the
   // dynamic graph.
   void updateRobotState(std::vector<double> &anglesIn);
@@ -63,7 +63,7 @@ class SoTHRP2Controller: public
 		 const std::string& command,
 		 dynamicgraph::corba::Interpreter& interpreter);
   
-  void startupPython();
+  virtual void startupPython();
   
   
   /// \brief Current integration step.

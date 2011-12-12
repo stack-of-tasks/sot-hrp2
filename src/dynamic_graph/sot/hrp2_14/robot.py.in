@@ -111,4 +111,4 @@ class Robot (Hrp2):
 
         Hrp2.__init__(self, name, modelDir, xmlDir, device, DynamicHrp2, tracer)
 
-__all__ = [Robot]
+__all__ = ["Robot"]
