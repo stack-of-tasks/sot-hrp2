@@ -18,7 +18,19 @@ print("Prologue HRP2-14")
 from dynamic_graph.sot.hrp2_14.robot import *
 from dynamic_graph.sot.hrp2.prologue import *
 
-robot,solver = prologue_hrp2("Robot")
+# Create the device.
+# This entity behaves exactly like robotsimu except:
+# 1. it does not provide the increment method
+# 2. it forwards the robot control to the sot-abstract
+#    controller.
+Device = PyEntityFactoryClass('Device')
+# Create instance for HRP2JRL
+device=Device('HRP2LAAS')
+
+# Create the robot using the device.
+robot = Robot(name = 'robot', device = device)
+
+solver = prologue_hrp2(robot,device)
 __all__ = ["robot","solver"]
 
 ####################################

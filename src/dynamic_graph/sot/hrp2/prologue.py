@@ -19,16 +19,7 @@ from dynamic_graph import plug
 from dynamic_graph.entity import PyEntityFactoryClass
 from dynamic_graph.sot.dynamics.solver import Solver
 
-def prologue_hrp2(hrp2class):
-    # Create the device.
-    # This entity behaves exactly like robotsimu except:
-    # 1. it does not provide the increment method
-    # 2. it forwards the robot control to the sot-abstract
-    #    controller.
-    Device = PyEntityFactoryClass('Device')
-
-    # Create the robot using the device.
-    robot = hrp2class(name = 'robot', device = Device('robot_device'))
+def prologue_hrp2(robot,device):
 
     # Initialize the zmp signal to the current com.
     _com = robot.dynamic.com.value
@@ -63,7 +54,7 @@ def prologue_hrp2(hrp2class):
         print("Prologue ran successfully.")
 
     # Make sure only robot and solver are visible from the outside.
-    __all__ = ["robot", "solver"]
+    return solver
 
 
 ####################################
