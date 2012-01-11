@@ -26,7 +26,6 @@ const std::string SoTHRP2_10_Controller::LOG_PYTHON_10="/tmp/HRP2Controller_10_p
 SoTHRP2_10_Controller::SoTHRP2_10_Controller():
   SoTHRP2Controller(ROBOTNAME)
 {
-  std::cout << __FILE__ << " " << __FUNCTION__ <<":" << getClassName() << std::endl;
   startupPython();
 }
 
