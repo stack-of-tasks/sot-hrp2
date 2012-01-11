@@ -24,8 +24,8 @@ from dynamic_graph.sot.dynamics import AngleEstimator
 from dynamic_graph import enableTrace, plug
 from dynamic_graph.sot.se3 import R3, SO3, SE3
 
-from dynamic_graph.sot.dynamics.dynamic_hrp2 import DynamicHrp2
-from dynamic_graph.sot.dynamics.dynamic_hrp2_10 import DynamicHrp2_10
+# from dynamic_graph.sot.dynamics.dynamic_hrp2 import DynamicHrp2
+# from dynamic_graph.sot.dynamics.dynamic_hrp2_10 import DynamicHrp2_10
 
 from dynamic_graph.sot.dynamics.humanoid_robot import AbstractHumanoidRobot
 
