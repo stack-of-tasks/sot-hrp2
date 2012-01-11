@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef _SOT_HRP2Controller_H_
-#define _SOT_HRP2Controller_H_
+#ifndef _SOT_HRP2Device_H_
+#define _SOT_HRP2Device_H_
 
 #include <dynamic-graph/entity.h>
 #include <dynamic-graph/signal.h>
@@ -26,20 +26,24 @@
 #include <sot/core/device.hh>
 #include <sot/core/abstract-sot-external-interface.hh>
 
-#include "sot-hrp2-device.hh"
-
 namespace dgsot=dynamicgraph::sot;
 
-class SoTHRP2Controller: public 
-  dgsot::AbstractSotExternalInterface
+class SoTHRP2Device: public 
+dgsot::Device
 {
  public:
 
-  static const std::string LOG_PYTHON;
-  
-  SoTHRP2Controller(std::string RobotName);
-  virtual ~SoTHRP2Controller();
+  static const std::string CLASS_NAME;
+  static const double TIMESTEP_DEFAULT;
 
+  virtual const std::string& getClassName () const		
+  {  
+    return CLASS_NAME;							    
+  }
+  
+  SoTHRP2Device(std::string RobotName);
+  virtual ~SoTHRP2Device();
+  
   void setupSetSensors(std::map<std::string,dgsot::SensorValues> &sensorsIn);
 
   void nominalSetSensors(std::map<std::string,dgsot::SensorValues> &sensorsIn);
@@ -48,21 +52,25 @@ class SoTHRP2Controller: public
 
   void getControl(std::map<std::string, dgsot::ControlValues> &anglesOut);
 
- protected:
+protected:
   // Update output port with the control computed from the
   // dynamic graph.
   void updateRobotState(std::vector<double> &anglesIn);
-  
-  void runPython(std::ostream& file,
-		 const std::string& command,
-		 dynamicgraph::corba::Interpreter& interpreter);
-  
-  virtual void startupPython();
-    
-  /// Embedded python interpreter accessible via Corba
-  dynamicgraph::corba::Interpreter interpreter_;
 
-  SoTHRP2Device device_;
+  /// \brief Current integration step.
+  double timestep_;
+  
+  /// \brief Previous robot configuration.
+  maal::boost::Vector previousState_;
+  
+  /// \brief Robot state provided by OpenHRP.
+  ///
+  /// This corresponds to the real encoders values and take into
+  /// account the stabilization step. Therefore, this usually
+  /// does *not* match the state control input signal.
+  ///
+  dynamicgraph::Signal<ml::Vector, int> robotState_;
+
+
 };
-
-#endif /* _SOT_HRP2Controller_H_ */
+#endif _SOT_HRP2Device_H_
