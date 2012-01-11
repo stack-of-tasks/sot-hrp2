@@ -25,6 +25,8 @@ FUNCTION(COMPILE_PLUGIN NAME SOURCES ENTITIES)
   PKG_CONFIG_USE_DEPENDENCY(${NAME} jrl-mathtools)
   PKG_CONFIG_USE_DEPENDENCY(${NAME} jrl-mal)
   PKG_CONFIG_USE_DEPENDENCY(${NAME} sot-core)
+  PKG_CONFIG_USE_DEPENDENCY(${NAME} jrl-dynamics)
+  PKG_CONFIG_USE_DEPENDENCY(${NAME} sot-dynamic)
 
   INSTALL(TARGETS ${NAME} DESTINATION lib/plugin)
 
@@ -43,8 +45,9 @@ ENDFUNCTION()
 
 # Compile plug-ins.
 COMPILE_PLUGIN(dynamic-hrp2_14 dynamic-hrp2_14.cc DynamicHrp2_14)
-COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
+PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_14 hrp2-dynamics)
 
+COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
 
 CONFIG_FILES(dynamic_graph/sot/hrp2_10/robot.py)
 CONFIG_FILES(dynamic_graph/sot/hrp2_14/robot.py)
@@ -76,18 +79,34 @@ PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
 # Add the library to wrap the controller of HRP2-JRL.
 MACRO(build_hrp2_controller robotnumber)
 
-ADD_LIBRARY(sot-hrp2-${robotnumber}-controller
-  SHARED
-  sot-hrp2-controller.cpp
-  sot-hrp2-${robotnumber}-controller.cpp
-)
+  SET(CONTROLLER_NAME sot-hrp2-${robotnumber}-controller)
+  ADD_LIBRARY(${CONTROLLER_NAME}
+    SHARED
+    sot-hrp2-controller.cpp
+    sot-hrp2-device.cpp
+    sot-hrp2-${robotnumber}-controller.cpp
+  )
 
-# Link the dynamic library containing the SoT with its dependencies.
-PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-${robotnumber}-controller "dynamic-graph")
-PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-${robotnumber}-controller "sot-core")
-PKG_CONFIG_USE_DEPENDENCY(sot-hrp2-${robotnumber}-controller "dynamic-graph-corba")
+  # Link the dynamic library containing the SoT with its dependencies.
+  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph")
+  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-python")
+  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "sot-core")
+  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-corba")
+ 
+  INSTALL(TARGETS ${CONTROLLER_NAME} DESTINATION lib)
 
-INSTALL(TARGETS sot-hrp2-${robotnumber}-controller DESTINATION lib)
+  # build python submodule
+  STRING(REPLACE - _ PYTHON_LIBRARY_NAME ${CONTROLLER_NAME})
+  ADD_DEPENDENCIES(${CONTROLLER_NAME} MKDIR_${PYTHON_LIBRARY_NAME})
+  ADD_CUSTOM_TARGET(MKDIR_${PYTHON_LIBRARY_NAME}
+    mkdir -p dynamic_graph/sot/hrp2/${PYTHON_LIBRARY_NAME}
+    )
+  SET(NEW_ENTITY_CLASS ${ENTITIES})
+  DYNAMIC_GRAPH_PYTHON_MODULE("sot/hrp2/${PYTHON_LIBRARY_NAME}"
+    ${CONTROLLER_NAME}
+    sot/hrp2/${PYTHON_LIBRARY_NAME}/wrap
+    )
+
 ENDMACRO()
 
 build_hrp2_controller("10")
