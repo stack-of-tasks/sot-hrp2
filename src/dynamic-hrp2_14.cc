@@ -23,7 +23,6 @@
 using namespace dynamicgraph;
 using namespace dynamicgraph::sot;
 
-#include <abstract-robot-dynamics/robot-dynamics-object-constructor.hh>
 
 namespace dynamicgraph
 {
