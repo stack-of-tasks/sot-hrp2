@@ -1,0 +1,24 @@
+Release v1.0.0, 2012-01-16:
+Olivier Stasse (17):
+      Add independent sot controller loaded through an abstract interface.
+      The HRP-2 controller files.
+      Fix problems for compiling.
+      Synchronize cmake.
+      Working hrp2-controller inside sot-hrp2-sys.
+      Implement the one robot one sot-library strategy.
+      Proper initialization of the robots.
+      Fix name for sot-hrp2-14-controller.
+      Add np import.
+      Includes of the optimized dynamics for hrp2-10 and hrp2-14.
+      Modify wrong inclusion path.
+      Add python wrapper + dependencies to appropriates libraries.
+      Remove dependency to old dynamics library.
+      Remove output message in the controller.
+      Reorganize the sot-hrp2-controller.
+      Minor indentation
+      Remove unnecessary include file.
+
+Thomas Moulard (2):
+      Initial work.
+      Migrate Python files properly.
+
