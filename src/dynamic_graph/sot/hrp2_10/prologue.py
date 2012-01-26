@@ -13,7 +13,7 @@
 # General Lesser Public License for more details.  You should have
 # received a copy of the GNU Lesser General Public License along with
 # dynamic-graph. If not, see <http://www.gnu.org/licenses/>.
-print("Prologue HRP2-14")
+print("Prologue HRP2-10")
 
 from dynamic_graph.sot.hrp2_10.robot import *
 from dynamic_graph.sot.hrp2.prologue import *
