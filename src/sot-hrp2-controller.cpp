@@ -16,7 +16,7 @@
  */
 
 #include <sot/core/debug.hh>
-
+#include <sot/core/exception-abstract.hh>
 #include "sot-hrp2-controller.hh"
 
 
@@ -30,8 +30,9 @@ SoTHRP2Controller::SoTHRP2Controller(std::string RobotName):
   device_(RobotName)
 {
 
-  std::cout << __FILE__ << ":" << __FUNCTION__ <<"(#" 
-	    << __LINE__ << " )" << std::endl;
+  sotDEBUG(25) << __FILE__ << ":" 
+	       << __FUNCTION__ <<"(#" 
+	       << __LINE__ << " )" << std::endl;
 
 }
 
@@ -62,7 +63,22 @@ cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsIn)
 void SoTHRP2Controller::
 getControl(map<string,dgsot::ControlValues> &controlOut)
 {
-  device_.getControl(controlOut);
+  try 
+    {
+      sotDEBUG(25) << __FILE__ << __FUNCTION__ << "(#" << __LINE__ << ")" << endl;
+      device_.getControl(controlOut);
+      sotDEBUG(25) << __FILE__ << __FUNCTION__ << "(#" << __LINE__ << ")" << endl;
+    }
+  catch ( dynamicgraph::sot::ExceptionAbstract & err)
+    {
+
+      std::cout << __FILE__ << " " 
+		<< __FUNCTION__ << " (" 
+		<< __LINE__ << ") " 
+		<< err.getStringMessage() 
+		<<  endl;
+      throw err;
+    }
 }
 
 void SoTHRP2Controller::

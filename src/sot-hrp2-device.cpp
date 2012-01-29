@@ -8,22 +8,27 @@
  * This file is part of HRP2Controller.
  * HRP2Controller is not a free software, 
  * it contains information related to HRP-2 which involves
- * that you either purchased the proper license to havec access to
+ * that you either purchased the proper license to have access to
  * those informations, or that you signed the appropriate
  * Non-Disclosure agreement.
  *
  *
  */
+
+#include <fstream>
 #include <map>
 
 #include <sot/core/debug.hh>
 
 #include "sot-hrp2-device.hh"
+#include <dynamic-graph/factory.h>
+#include <dynamic-graph/all-commands.h>
 
 using namespace std;
 
-const std::string SoTHRP2Device::CLASS_NAME = "Device";
 const double SoTHRP2Device::TIMESTEP_DEFAULT = 0.005;
+
+DYNAMICGRAPH_FACTORY_ENTITY_PLUGIN(SoTHRP2Device,"Device");
 
 SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   dgsot::Device(RobotName),
@@ -31,7 +36,22 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   previousState_ (),
   robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState")
 {
+  sotDEBUGIN(25) ;
   signalRegistration (robotState_);
+  using namespace dynamicgraph::command;
+  std::string docstring;
+  /* Command increment. */
+  docstring =
+    "\n"
+    "    Integrate dynamics for time step provided as input\n"
+    "\n"
+    "      take one floating point number as input\n"
+    "\n";
+  addCommand("increment",
+	     makeCommandVoid1((Device&)*this,
+			      &Device::increment, docstring));
+  
+  sotDEBUGOUT(25);
 }
 
 SoTHRP2Device::~SoTHRP2Device()
@@ -39,7 +59,7 @@ SoTHRP2Device::~SoTHRP2Device()
 
 void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
- 
+  sotDEBUGIN(25) ;
   vector<double> anglesIn = SensorsIn["joints"].getValues();
 
   // Read state from motor command
@@ -65,11 +85,13 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
     }
       
   updateRobotState(anglesIn);
+  sotDEBUGOUT(25);
 }
 
 
 void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
+  sotDEBUGIN(25) ;
   // Read angular values.
   vector<double>  anglesIn = SensorsIn["joints"].getValues();
   updateRobotState(anglesIn);
@@ -85,11 +107,12 @@ void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn
       forcesSOUT[i]->setConstant (mlforces);
       forcesSOUT[i]->setTime(t+1);
     }
-  
+  sotDEBUGOUT(25) ;  
 }
 
 void SoTHRP2Device::cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsIn)
 {
+  sotDEBUGIN(25) ;
   vector<double>  anglesIn = SensorsIn["joints"].getValues();
 
   updateRobotState(anglesIn);
@@ -101,11 +124,13 @@ void SoTHRP2Device::cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsI
 	mlforces(j) = 0.0;
       forcesSOUT[i]->setConstant (mlforces);
     }
+  sotDEBUGOUT(25) ;
 }
 
 
 void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 {
+  sotDEBUGIN(25) ;
   vector<double> anglesOut;
   anglesOut.resize(state_.size());
 
@@ -166,17 +191,18 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
       baseff[i * 4 + j] = freeFlyerPose () (i, j);
 
   controlOut["baseff"].setValues(baseff);
-  
+  sotDEBUGOUT(25) ;
 }
 
 void SoTHRP2Device::updateRobotState(vector<double> &anglesIn)
 {
+  sotDEBUGIN(25) ;
   ml::Vector robotState (anglesIn.size () + 6);
   for (unsigned i = 0; i < 6; ++i)
     robotState (i) = 0.;
   for (unsigned i = 0; i < anglesIn.size(); ++i)
     robotState (i + 6) = anglesIn[i];
   robotState_.setConstant(robotState);
-  
+  sotDEBUGOUT(25) ;
 }
 

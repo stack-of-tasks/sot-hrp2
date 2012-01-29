@@ -73,4 +73,4 @@ protected:
 
 
 };
-#endif _SOT_HRP2Device_H_
+#endif /* _SOT_HRP2Device_H_*/
