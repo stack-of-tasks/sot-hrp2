@@ -96,7 +96,9 @@ MACRO(build_hrp2_controller robotnumber)
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-python")
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-corba")
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "sot-core")
- 
+
+  ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
+
   INSTALL(TARGETS ${CONTROLLER_NAME} DESTINATION lib)
 
   # build python submodule

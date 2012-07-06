@@ -37,7 +37,7 @@ void SoTHRP2_14_Controller::startupPython()
     (aof,
      "from dynamic_graph.sot.hrp2_14.prologue import robot, solver",
      interpreter_);
-  interpreter_.startCorbaServer ("openhrp", "", "stackOfTasks", "");
+  aof.close();
 }
 
 extern "C" 

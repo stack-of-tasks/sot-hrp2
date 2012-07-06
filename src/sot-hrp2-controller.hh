@@ -22,7 +22,7 @@
 #include <dynamic-graph/signal.h>
 #include <dynamic-graph/signal-ptr.h>
 #include <dynamic-graph/linear-algebra.h>
-#include <dynamic-graph/corba/interpreter.hh>
+#include <dynamic_graph_bridge/ros_interpreter.hh>
 #include <sot/core/device.hh>
 #include <sot/core/abstract-sot-external-interface.hh>
 
@@ -55,12 +55,12 @@ class SoTHRP2Controller: public
   
   void runPython(std::ostream& file,
 		 const std::string& command,
-		 dynamicgraph::corba::Interpreter& interpreter);
+		 dynamicgraph::Interpreter& interpreter);
   
   virtual void startupPython();
     
   /// Embedded python interpreter accessible via Corba
-  dynamicgraph::corba::Interpreter interpreter_;
+  dynamicgraph::Interpreter interpreter_;
 
   SoTHRP2Device device_;
 };

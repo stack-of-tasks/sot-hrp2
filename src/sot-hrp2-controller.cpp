@@ -18,15 +18,14 @@
 #include <sot/core/debug.hh>
 #include <sot/core/exception-abstract.hh>
 #include "sot-hrp2-controller.hh"
-
-
+#include <dynamic_graph_bridge/ros_init.hh>
 
 const std::string SoTHRP2Controller::LOG_PYTHON="/tmp/HRP2Controller_python.out";
 
 using namespace std;
 
 SoTHRP2Controller::SoTHRP2Controller(std::string RobotName):
-  interpreter_(),
+  interpreter_(dynamicgraph::rosInit(false)),
   device_(RobotName)
 {
 
@@ -84,10 +83,10 @@ getControl(map<string,dgsot::ControlValues> &controlOut)
 void SoTHRP2Controller::
 runPython(std::ostream& file,
 	  const std::string& command,
-	  dynamicgraph::corba::Interpreter& interpreter)
+	  dynamicgraph::Interpreter& interpreter)
 {
   file << ">>> " << command << std::endl;
-  std::string value = interpreter.python (command);
+  std::string value = interpreter.runCommand(command);
   if (value != "None")
     file << value;
 }
@@ -95,7 +94,6 @@ runPython(std::ostream& file,
 void SoTHRP2Controller::
 startupPython()
 {
-  std::cout << "Went through startupPython()" << std::endl;
   std::ofstream aof(LOG_PYTHON.c_str());
   runPython (aof, "import sys, os", interpreter_);
   runPython (aof, "pythonpath = os.environ['PYTHONPATH']", interpreter_);
@@ -106,6 +104,13 @@ startupPython()
 	     "    path.append(p)", interpreter_);
   runPython (aof, "path.extend(sys.path)", interpreter_);
   runPython (aof, "sys.path = path", interpreter_);
+
+  // Calling again rosInit here to start the spinner. It will
+  // deal with topics and services callbacks in a separate, non
+  // real-time thread. See roscpp documentation for more
+  // information.
+  dynamicgraph::rosInit (true);
+
   aof.close();
 }
 
