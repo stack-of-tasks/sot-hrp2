@@ -17,8 +17,8 @@
 
 #include <sot/core/debug.hh>
 #include <sot/core/exception-abstract.hh>
-#include "sot-hrp2-controller.hh"
 #include <dynamic_graph_bridge/ros_init.hh>
+#include "sot-hrp2-controller.hh"
 
 const std::string SoTHRP2Controller::LOG_PYTHON="/tmp/HRP2Controller_python.out";
 

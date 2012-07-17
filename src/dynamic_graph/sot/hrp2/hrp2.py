@@ -43,16 +43,17 @@ class Hrp2(AbstractHumanoidRobot):
 
         self.OperationalPoints.append('waist')
         self.device = device
-        modelName = 'HRP2JRLmainsmall.wrl'
-        specificitiesPath = xmlDir + '/HRP2SpecificitiesSmall.xml'
-        jointRankPath = xmlDir + '/HRP2LinkJointRankSmall.xml'
+        self.modelDir = modelDir
+        self.modelName = 'HRP2JRLmainsmall.wrl'
+        self.specificitiesPath = xmlDir + '/HRP2SpecificitiesSmall.xml'
+        self.jointRankPath = xmlDir + '/HRP2LinkJointRankSmall.xml'
 
         self.dynamic = self.loadModelFromJrlDynamics(
             self.name + '_dynamic',
             modelDir,
-            modelName,
-            specificitiesPath,
-            jointRankPath,
+            self.modelName,
+            self.specificitiesPath,
+            self.jointRankPath,
             dynamicType)
 
         self.dimension = self.dynamic.getDimension()
