@@ -47,9 +47,9 @@ def prologue_hrp2(robot,device):
     # The robot is currently in half-sitting, so this script freezes com
     # and feet position so that the robot will remain stable while the
     # user program is starting.
-    solver.push(robot.comTask.name)
+    solver.push(robot.comTask)
     for i in s:
-        solver.push(robot.tasks[i].name)
+        solver.push(robot.tasks[i])
 
         print("Prologue ran successfully.")
 
