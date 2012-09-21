@@ -70,6 +70,9 @@ protected:
   ///
   dynamicgraph::Signal<ml::Vector, int> robotState_;
 
+  /// Intermediate variables to avoid allocation during control
+  ml::Vector mlforces;
+  ml::Vector mlRobotState;
 
 };
 #endif /* _SOT_HRP2Device_H_*/

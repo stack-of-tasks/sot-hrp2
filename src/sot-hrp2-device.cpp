@@ -34,7 +34,8 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   dgsot::Device(RobotName),
   timestep_(TIMESTEP_DEFAULT),
   previousState_ (),
-  robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState")
+  robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
+  mlforces (6)
 {
   sotDEBUGIN(25) ;
   signalRegistration (robotState_);
@@ -75,7 +76,6 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
   stateSOUT.setConstant (state);
 
   // Implements force recollection.
-  ml::Vector mlforces(6);
   vector<double> forcesIn = SensorsIn["forces"].getValues();
   for(int i=0;i<4;++i)
     {
@@ -98,7 +98,6 @@ void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn
 
   // Read force values.
   vector<double> forcesIn = SensorsIn["forces"].getValues();
-  ml::Vector mlforces (6);
   int t = controlSIN.getTime();
   for(int i = 0; i < 4; ++i)
     {
@@ -117,7 +116,6 @@ void SoTHRP2Device::cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsI
 
   updateRobotState(anglesIn);
 
-  ml::Vector mlforces (6);
   for(int i = 0; i < 4; ++i)
     {
       for (int j = 0; j < 6; ++j)
