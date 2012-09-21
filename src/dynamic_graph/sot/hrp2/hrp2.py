@@ -18,7 +18,7 @@ from __future__ import print_function
 
 import numpy as np
 from dynamic_graph.sot import SE3, R3, SO3
-from dynamic_graph.sot.core import FeaturePoint6dRelative, \
+from dynamic_graph.sot.core import \
     FeatureGeneric, FeatureJointLimits, Task, Constraint, GainAdaptive, SOT
 from dynamic_graph.sot.dynamics import AngleEstimator
 from dynamic_graph import enableTrace, plug
