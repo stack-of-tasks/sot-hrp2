@@ -24,6 +24,7 @@
 #include <dynamic-graph/linear-algebra.h>
 #include <sot/core/device.hh>
 #include <sot/core/abstract-sot-external-interface.hh>
+#include <sot/core/matrix-rotation.hh>
 
 namespace dgsot=dynamicgraph::sot;
 
@@ -73,6 +74,7 @@ protected:
   /// Intermediate variables to avoid allocation during control
   ml::Vector mlforces;
   ml::Vector mlRobotState;
+  dgsot::MatrixRotation pose;
 
 };
 #endif /* _SOT_HRP2Device_H_*/

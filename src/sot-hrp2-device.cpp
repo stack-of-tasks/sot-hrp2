@@ -35,7 +35,8 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   timestep_(TIMESTEP_DEFAULT),
   previousState_ (),
   robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
-  mlforces (6)
+  mlforces (6),
+  pose ()
 {
   sotDEBUGIN(25) ;
   signalRegistration (robotState_);
@@ -83,7 +84,14 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 	mlforces(j) = forcesIn[i*6+j];
       forcesSOUT[i]->setConstant(mlforces);
     }
-      
+
+  vector<double> attitude = SensorsIn ["attitude"].getValues ();
+  for (unsigned int i = 0; i < 3; ++i)
+    for (unsigned int j = 0; j < 3; ++j)
+      pose (i, j) = attitude [i * 3 + j];
+  attitudeSOUT.setConstant (pose);
+  attitudeSOUT.setTime (t);
+
   updateRobotState(anglesIn);
   sotDEBUGOUT(25);
 }
