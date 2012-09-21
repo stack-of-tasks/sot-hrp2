@@ -22,7 +22,6 @@
 #include <dynamic-graph/signal.h>
 #include <dynamic-graph/signal-ptr.h>
 #include <dynamic-graph/linear-algebra.h>
-#include <dynamic-graph/corba/interpreter.hh>
 #include <sot/core/device.hh>
 #include <sot/core/abstract-sot-external-interface.hh>
 

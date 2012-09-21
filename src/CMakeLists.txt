@@ -94,7 +94,6 @@ MACRO(build_hrp2_controller robotnumber)
   # Link the dynamic library containing the SoT with its dependencies.
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph")
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-python")
-  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-corba")
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "sot-core")
 
   ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")

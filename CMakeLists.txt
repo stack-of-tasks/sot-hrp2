@@ -52,7 +52,6 @@ ADD_REQUIRED_DEPENDENCY("hrp2-14 >= 1.8")
 ADD_REQUIRED_DEPENDENCY("dynamic-graph")
 ADD_REQUIRED_DEPENDENCY("sot-core")
 ADD_REQUIRED_DEPENDENCY("sot-dynamic")
-ADD_REQUIRED_DEPENDENCY("dynamic-graph-corba")
 ADD_REQUIRED_DEPENDENCY("dynamic-graph-python")
 
 ADD_ROSPACK_DEPENDENCY("dynamic_graph_bridge")
