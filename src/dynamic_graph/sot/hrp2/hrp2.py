@@ -42,6 +42,7 @@ class Hrp2(AbstractHumanoidRobot):
         AbstractHumanoidRobot.__init__ (self, name, tracer)
 
         self.OperationalPoints.append('waist')
+        self.OperationalPoints.append('chest')
         self.device = device
         self.modelDir = modelDir
         self.modelName = 'HRP2JRLmainsmall.wrl'
