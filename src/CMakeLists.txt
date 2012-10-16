@@ -71,13 +71,13 @@ SET(FILES __init__.py robot.py)
 # Install dynamic_graph.sot.hrp2_14
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2_14)
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
-PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" ${PYTHON_SITELIB})
+PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
 
 # Install dynamic_graph.sot.hrp2_10
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2_10)
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
-PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" ${PYTHON_SITELIB})
+PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
 
 # Add the library to wrap the controller of HRP2-JRL.
