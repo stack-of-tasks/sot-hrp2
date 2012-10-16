@@ -39,6 +39,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   pose ()
 {
   sotDEBUGIN(25) ;
+  for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
   signalRegistration (robotState_);
   using namespace dynamicgraph::command;
   std::string docstring;
@@ -83,6 +84,7 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
       for(int j=0;j<6;++j)
 	mlforces(j) = forcesIn[i*6+j];
       forcesSOUT[i]->setConstant(mlforces);
+      forcesSOUT[i]->setTime (t);
     }
 
   vector<double> attitude = SensorsIn ["attitude"].getValues ();
