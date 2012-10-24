@@ -143,21 +143,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   anglesOut.resize(state_.size());
 
   // Integrate control
-  try 
-    {
-      increment(timestep_);
-    }
-  catch(dynamicgraph::ExceptionSignal)
-    {
-      // The strategy in case of problem is to maintain the previous
-      // state.
-      for(unsigned int i=6; i < state_.size();++i)
-	anglesOut[i-6] = previousState_(i);
-
-      controlOut["joints"].setValues(anglesOut);
-      std::cout << "Signal from the control. Freezing the state." << std::endl;
-      return;
-    }
+  increment(timestep_);
 
   sotDEBUG (25) << "state = " << state_ << std::endl;
   sotDEBUG (25) << "diff  = " << state_ - previousState_ << std::endl;
