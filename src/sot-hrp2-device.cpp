@@ -6,7 +6,7 @@
  * LAAS, CNRS
  *
  * This file is part of HRP2Controller.
- * HRP2Controller is not a free software, 
+ * HRP2Controller is not a free software,
  * it contains information related to HRP-2 which involves
  * that you either purchased the proper license to have access to
  * those informations, or that you signed the appropriate
@@ -34,13 +34,13 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   dgsot::Device(RobotName),
   timestep_(TIMESTEP_DEFAULT),
   previousState_ (),
-  robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
+  robotStateSOUT_ ("Device(" + RobotName + ")::output(vector)::robotState"),
   mlforces (6),
   pose ()
 {
   sotDEBUGIN(25) ;
   for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
-  signalRegistration (robotState_);
+  signalRegistration (robotStateSOUT_);
   using namespace dynamicgraph::command;
   std::string docstring;
   /* Command increment. */
@@ -53,7 +53,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   addCommand("increment",
 	     makeCommandVoid1((Device&)*this,
 			      &Device::increment, docstring));
-  
+
   sotDEBUGOUT(25);
 }
 
@@ -63,20 +63,12 @@ SoTHRP2Device::~SoTHRP2Device()
 void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   sotDEBUGIN(25) ;
-  vector<double> anglesIn = SensorsIn["joints"].getValues();
+  const vector<double>& anglesIn = SensorsIn["joints"].getValues();
 
-  // Read state from motor command
+  sotDEBUG (25) << "state_ = " << state_ << std::endl;
+  updateRobotState (anglesIn);
+
   int t = stateSOUT.getTime () + 1;
-  maal::boost::Vector state = stateSOUT.access (t);
-
-  for (unsigned int i = 6; i < state.size (); ++i)
-    state (i) = anglesIn[i - 6];
-
-  previousState_ = state;
-  
-  sotDEBUG (25) << "state = " << state << std::endl;
-  stateSOUT.setConstant (state);
-
   // Implements force recollection.
   vector<double> forcesIn = SensorsIn["forces"].getValues();
   for(int i=0;i<4;++i)
@@ -94,7 +86,6 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
   attitudeSOUT.setConstant (pose);
   attitudeSOUT.setTime (t);
 
-  updateRobotState(anglesIn);
   sotDEBUGOUT(25);
 }
 
@@ -103,7 +94,7 @@ void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn
 {
   sotDEBUGIN(25) ;
   // Read angular values.
-  vector<double>  anglesIn = SensorsIn["joints"].getValues();
+  const vector<double>&  anglesIn = SensorsIn["joints"].getValues();
   updateRobotState(anglesIn);
 
   // Read force values.
@@ -116,13 +107,13 @@ void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn
       forcesSOUT[i]->setConstant (mlforces);
       forcesSOUT[i]->setTime(t+1);
     }
-  sotDEBUGOUT(25) ;  
+  sotDEBUGOUT(25) ;
 }
 
 void SoTHRP2Device::cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsIn)
 {
   sotDEBUGIN(25) ;
-  vector<double>  anglesIn = SensorsIn["joints"].getValues();
+  const vector<double>&  anglesIn = SensorsIn["joints"].getValues();
 
   updateRobotState(anglesIn);
 
@@ -156,7 +147,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   for(unsigned int i=6; i < state_.size();++i)
     anglesOut[i-6] = state_(i);
   controlOut["joints"].setValues(anglesOut);
-  
+
   // Read zmp reference from input signal if plugged
   int time = controlSIN.getTime ();
   zmpSIN.recompute (time + 1);
@@ -174,7 +165,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 
   controlOut["zmp"].setName("zmp");
   controlOut["zmp"].setValues(ZMPRef);
-  
+
   // Update position of freeflyer in global frame
   std::vector<double> baseff;
   baseff.resize(12);
@@ -188,15 +179,22 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   sotDEBUGOUT(25) ;
 }
 
-void SoTHRP2Device::updateRobotState(vector<double> &anglesIn)
+void SoTHRP2Device::updateRobotState(const vector<double> &anglesIn)
 {
   sotDEBUGIN(25) ;
-  ml::Vector robotState (anglesIn.size () + 6);
+  robotState_.resize (anglesIn.size () + 6);
   for (unsigned i = 0; i < 6; ++i)
-    robotState (i) = 0.;
-  for (unsigned i = 0; i < anglesIn.size(); ++i)
-    robotState (i + 6) = anglesIn[i];
-  robotState_.setConstant(robotState);
+    robotState_ (i) = 0.;
+
+  // Read state from motor command
+  previousState_ = state_;
+  for (unsigned i = 6; i < state_.size (); ++i) {
+    state_ (i) = anglesIn [i-6];
+  }
+  for (unsigned i = 0; i < anglesIn.size(); ++i) {
+    robotState_ (i + 6) = anglesIn[i];
+  }
+  robotStateSOUT_.setConstant(robotState_);
   sotDEBUGOUT(25) ;
 }
 

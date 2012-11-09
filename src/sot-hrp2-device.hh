@@ -55,7 +55,7 @@ dgsot::Device
 protected:
   // Update output port with the control computed from the
   // dynamic graph.
-  void updateRobotState(std::vector<double> &anglesIn);
+  void updateRobotState(const std::vector<double> &anglesIn);
 
   /// \brief Current integration step.
   double timestep_;
@@ -69,11 +69,10 @@ protected:
   /// account the stabilization step. Therefore, this usually
   /// does *not* match the state control input signal.
   ///
-  dynamicgraph::Signal<ml::Vector, int> robotState_;
-
+  dynamicgraph::Signal<ml::Vector, int> robotStateSOUT_;
+  ml::Vector robotState_;
   /// Intermediate variables to avoid allocation during control
   ml::Vector mlforces;
-  ml::Vector mlRobotState;
   dgsot::MatrixRotation pose;
 
 };
