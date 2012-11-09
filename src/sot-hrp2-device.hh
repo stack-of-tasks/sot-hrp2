@@ -71,16 +71,15 @@ protected:
   /// account the stabilization step. Therefore, this usually
   /// does *not* match the state control input signal.
   ///
-  dynamicgraph::Signal<ml::Vector, int> robotState_;
-
   /// Accelerations measured by accelerometers
   dynamicgraph::Signal <ml::Vector, int> accelerometerSOUT_;
   /// Rotation velocity measured by gyrometers
   dynamicgraph::Signal <ml::Vector, int> gyrometerSOUT_;
 
+  dynamicgraph::Signal<ml::Vector, int> robotStateSOUT_;
+  ml::Vector robotState_;
   /// Intermediate variables to avoid allocation during control
   ml::Vector mlforces;
-  ml::Vector mlRobotState;
   dgsot::MatrixRotation pose;
   ml::Vector accelerometer_;
   ml::Vector gyrometer_;

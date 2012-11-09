@@ -6,7 +6,7 @@
  * LAAS, CNRS
  *
  * This file is part of HRP2Controller.
- * HRP2Controller is not a free software, 
+ * HRP2Controller is not a free software,
  * it contains information related to HRP-2 which involves
  * that you either purchased the proper license to have access to
  * those informations, or that you signed the appropriate
@@ -34,7 +34,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   dgsot::Device(RobotName),
   timestep_(TIMESTEP_DEFAULT),
   previousState_ (),
-  robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
+  robotStateSOUT_ ("Device(" + RobotName + ")::output(vector)::robotState"),
   accelerometerSOUT_
   ("StackOfTasks(" + RobotName + ")::output(vector)::accelerometer"),
   gyrometerSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::gyrometer"),
@@ -46,7 +46,8 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
 {
   sotDEBUGIN(25) ;
   for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
-  signalRegistration (robotState_ << accelerometerSOUT_ << gyrometerSOUT_);
+  signalRegistration (robotStateSOUT_);
+  signalRegistration (accelerometerSOUT_ << gyrometerSOUT_);
   ml::Vector data (3); data.setZero ();
   accelerometerSOUT_.setConstant (data);
   gyrometerSOUT_.setConstant (data);
@@ -64,7 +65,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   addCommand("increment",
 	     makeCommandVoid1((Device&)*this,
 			      &Device::increment, docstring));
-  
+
   sotDEBUGOUT(25);
 }
 
@@ -75,8 +76,11 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   sotDEBUGIN(25) ;
   const vector<double>& anglesIn = SensorsIn["joints"].getValues();
-  int t = stateSOUT.getTime () + 1;
 
+  sotDEBUG (25) << "state_ = " << state_ << std::endl;
+  updateRobotState (anglesIn);
+
+  int t = stateSOUT.getTime () + 1;
   // Implements force recollection.
   const vector<double>& forcesIn = SensorsIn["forces"].getValues();
   for(int i=0;i<4;++i)
@@ -104,10 +108,6 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
   accelerometerSOUT_.setConstant (accelerometer_);
   gyrometerSOUT_.setConstant (gyrometer_);
   
-  mlRobotState.resize (anglesIn.size () + 6);
-  for (unsigned i = 0; i < 6; ++i)
-    mlRobotState (i) = 0.;
-  updateRobotState(anglesIn);
   sotDEBUGOUT(25);
 }
 
@@ -147,7 +147,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   for(unsigned int i=6; i < state_.size();++i)
     anglesOut[i-6] = state_(i);
   controlOut["joints"].setValues(anglesOut);
-  
+
   // Read zmp reference from input signal if plugged
   int time = controlSIN.getTime ();
   zmpSIN.recompute (time + 1);
@@ -165,7 +165,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 
   controlOut["zmp"].setName("zmp");
   controlOut["zmp"].setValues(ZMPRef);
-  
+
   // Update position of freeflyer in global frame
   for (int i = 0;i < 3; ++i)
     baseff_[i*4+3] = freeFlyerPose () (i, 3);
@@ -180,9 +180,19 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 void SoTHRP2Device::updateRobotState(const vector<double> &anglesIn)
 {
   sotDEBUGIN(25) ;
-  for (unsigned i = 0; i < anglesIn.size(); ++i)
-    mlRobotState (i + 6) = anglesIn[i];
-  robotState_.setConstant(mlRobotState);
+  robotState_.resize (anglesIn.size () + 6);
+  for (unsigned i = 0; i < 6; ++i)
+    robotState_ (i) = 0.;
+
+  // Read state from motor command
+  previousState_ = state_;
+  for (unsigned i = 6; i < state_.size (); ++i) {
+    state_ (i) = anglesIn [i-6];
+  }
+  for (unsigned i = 0; i < anglesIn.size(); ++i) {
+    robotState_ (i + 6) = anglesIn[i];
+  }
+  robotStateSOUT_.setConstant(robotState_);
   sotDEBUGOUT(25) ;
 }
 

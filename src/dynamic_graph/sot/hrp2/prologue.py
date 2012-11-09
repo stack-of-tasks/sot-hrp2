@@ -22,9 +22,8 @@ from dynamic_graph.sot.dynamics.solver import Solver
 def prologue_hrp2(robot,device):
 
     # Initialize the zmp signal to the current com.
-    _com = robot.dynamic.com.value
-    robot.device.zmp.value = (_com[0], _com[1], 0.)
-
+    _com = robot.com.value
+ 
     # Create a solver.
     solver = Solver(robot)
 
@@ -39,18 +38,19 @@ def prologue_hrp2(robot,device):
         robot.tasks[i].controlGain.value = 1.
 
     robot.comRef.value = robot.dynamic.com.value
-    robot.tasks ['com'].controlGain.value = 1.
+    robot.device.zmp.value = (0., 0., 0.,)
 
     # Push com and feet tasks.
     #
     # The robot is currently in half-sitting, so this script freezes com
     # and feet position so that the robot will remain stable while the
     # user program is starting.
-    solver.push(robot.comTask)
+    solver.push(robot.tasks ['com'])
     for i in s:
         solver.push(robot.tasks[i])
 
-        print("Prologue ran successfully.")
+    solver.push (robot.tasks ['posture'])
+    print("Prologue ran successfully.")
 
     # Make sure only robot and solver are visible from the outside.
     return solver
