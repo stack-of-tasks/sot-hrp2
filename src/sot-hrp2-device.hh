@@ -71,10 +71,17 @@ protected:
   ///
   dynamicgraph::Signal<ml::Vector, int> robotState_;
 
+  /// Accelerations measured by accelerometers
+  dynamicgraph::Signal <ml::Vector, int> accelerometerSOUT_;
+  /// Rotation velocity measured by gyrometers
+  dynamicgraph::Signal <ml::Vector, int> gyrometerSOUT_;
+
   /// Intermediate variables to avoid allocation during control
   ml::Vector mlforces;
   ml::Vector mlRobotState;
   dgsot::MatrixRotation pose;
+  ml::Vector accelerometer_;
+  ml::Vector gyrometer_;
 
 };
 #endif /* _SOT_HRP2Device_H_*/

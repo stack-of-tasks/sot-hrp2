@@ -35,12 +35,21 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   timestep_(TIMESTEP_DEFAULT),
   previousState_ (),
   robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
+  accelerometerSOUT_
+  ("StackOfTasks(" + RobotName + ")::output(vector)::accelerometer"),
+  gyrometerSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::gyrometer"),
   mlforces (6),
-  pose ()
+  pose (),
+  accelerometer_ (3),
+  gyrometer_ (3)
 {
   sotDEBUGIN(25) ;
   for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
-  signalRegistration (robotState_);
+  signalRegistration (robotState_ << accelerometerSOUT_ << gyrometerSOUT_);
+  ml::Vector data (3); data.setZero ();
+  accelerometerSOUT_.setConstant (data);
+  gyrometerSOUT_.setConstant (data);
+
   using namespace dynamicgraph::command;
   std::string docstring;
   /* Command increment. */
@@ -94,6 +103,15 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
   attitudeSOUT.setConstant (pose);
   attitudeSOUT.setTime (t);
 
+  vector<double> accelerometer = SensorsIn ["accelerometer_0"].getValues ();
+  vector<double> gyrometer = SensorsIn ["gyrometer_0"].getValues ();
+  for (std::size_t i=0; i<3; ++i) {
+    accelerometer_ (i) = accelerometer [i];
+    gyrometer_ (i) = gyrometer [i];
+  }
+  accelerometerSOUT_.setConstant (accelerometer_);
+  gyrometerSOUT_.setConstant (gyrometer_);
+  
   updateRobotState(anglesIn);
   sotDEBUGOUT(25);
 }
