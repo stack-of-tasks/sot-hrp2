@@ -44,6 +44,8 @@ dgsot::Device
   SoTHRP2Device(std::string RobotName);
   virtual ~SoTHRP2Device();
   
+  void setSensors(std::map<std::string,dgsot::SensorValues> &sensorsIn);
+
   void setupSetSensors(std::map<std::string,dgsot::SensorValues> &sensorsIn);
 
   void nominalSetSensors(std::map<std::string,dgsot::SensorValues> &sensorsIn);
@@ -55,7 +57,7 @@ dgsot::Device
 protected:
   // Update output port with the control computed from the
   // dynamic graph.
-  void updateRobotState(std::vector<double> &anglesIn);
+  void updateRobotState(const std::vector<double> &anglesIn);
 
   /// \brief Current integration step.
   double timestep_;
@@ -82,6 +84,6 @@ protected:
   dgsot::MatrixRotation pose;
   ml::Vector accelerometer_;
   ml::Vector gyrometer_;
-
+  std::vector<double> baseff_;
 };
 #endif /* _SOT_HRP2Device_H_*/

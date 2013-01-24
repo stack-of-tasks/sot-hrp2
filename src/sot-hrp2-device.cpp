@@ -41,7 +41,8 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   mlforces (6),
   pose (),
   accelerometer_ (3),
-  gyrometer_ (3)
+  gyrometer_ (3),
+  baseff_ ()
 {
   sotDEBUGIN(25) ;
   for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
@@ -49,6 +50,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   ml::Vector data (3); data.setZero ();
   accelerometerSOUT_.setConstant (data);
   gyrometerSOUT_.setConstant (data);
+  baseff_.resize(12);
 
   using namespace dynamicgraph::command;
   std::string docstring;
@@ -69,25 +71,14 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
 SoTHRP2Device::~SoTHRP2Device()
 { }
 
-void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
+void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   sotDEBUGIN(25) ;
-  vector<double> anglesIn = SensorsIn["joints"].getValues();
-
-  // Read state from motor command
+  const vector<double>& anglesIn = SensorsIn["joints"].getValues();
   int t = stateSOUT.getTime () + 1;
-  maal::boost::Vector state = stateSOUT.access (t);
-
-  for (unsigned int i = 6; i < state.size (); ++i)
-    state (i) = anglesIn[i - 6];
-
-  previousState_ = state;
-  
-  sotDEBUG (25) << "state = " << state << std::endl;
-  stateSOUT.setConstant (state);
 
   // Implements force recollection.
-  vector<double> forcesIn = SensorsIn["forces"].getValues();
+  const vector<double>& forcesIn = SensorsIn["forces"].getValues();
   for(int i=0;i<4;++i)
     {
       for(int j=0;j<6;++j)
@@ -96,15 +87,16 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
       forcesSOUT[i]->setTime (t);
     }
 
-  vector<double> attitude = SensorsIn ["attitude"].getValues ();
+  const vector<double>& attitude = SensorsIn ["attitude"].getValues ();
   for (unsigned int i = 0; i < 3; ++i)
     for (unsigned int j = 0; j < 3; ++j)
       pose (i, j) = attitude [i * 3 + j];
   attitudeSOUT.setConstant (pose);
   attitudeSOUT.setTime (t);
 
-  vector<double> accelerometer = SensorsIn ["accelerometer_0"].getValues ();
-  vector<double> gyrometer = SensorsIn ["gyrometer_0"].getValues ();
+  const vector<double>& accelerometer = 
+    SensorsIn ["accelerometer_0"].getValues ();
+  const vector<double>& gyrometer = SensorsIn ["gyrometer_0"].getValues ();
   for (std::size_t i=0; i<3; ++i) {
     accelerometer_ (i) = accelerometer [i];
     gyrometer_ (i) = gyrometer [i];
@@ -112,47 +104,28 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
   accelerometerSOUT_.setConstant (accelerometer_);
   gyrometerSOUT_.setConstant (gyrometer_);
   
+  mlRobotState.resize (anglesIn.size () + 6);
+  for (unsigned i = 0; i < 6; ++i)
+    mlRobotState (i) = 0.;
   updateRobotState(anglesIn);
   sotDEBUGOUT(25);
+}
+
+void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
+{
+  setSensors (SensorsIn);
 }
 
 
 void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
-  sotDEBUGIN(25) ;
-  // Read angular values.
-  vector<double>  anglesIn = SensorsIn["joints"].getValues();
-  updateRobotState(anglesIn);
-
-  // Read force values.
-  vector<double> forcesIn = SensorsIn["forces"].getValues();
-  int t = controlSIN.getTime();
-  for(int i = 0; i < 4; ++i)
-    {
-      for (int j = 0; j < 6; ++j)
-	mlforces(j) = forcesIn[i*6+j];
-      forcesSOUT[i]->setConstant (mlforces);
-      forcesSOUT[i]->setTime(t+1);
-    }
-  sotDEBUGOUT(25) ;  
+  setSensors (SensorsIn);
 }
 
 void SoTHRP2Device::cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsIn)
 {
-  sotDEBUGIN(25) ;
-  vector<double>  anglesIn = SensorsIn["joints"].getValues();
-
-  updateRobotState(anglesIn);
-
-  for(int i = 0; i < 4; ++i)
-    {
-      for (int j = 0; j < 6; ++j)
-	mlforces(j) = 0.0;
-      forcesSOUT[i]->setConstant (mlforces);
-    }
-  sotDEBUGOUT(25) ;
+  setSensors (SensorsIn);
 }
-
 
 void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 {
@@ -208,27 +181,22 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   controlOut["zmp"].setValues(ZMPRef);
   
   // Update position of freeflyer in global frame
-  std::vector<double> baseff;
-  baseff.resize(12);
   for (int i = 0;i < 3; ++i)
-    baseff[i*4+3] = freeFlyerPose () (i, 3);
+    baseff_[i*4+3] = freeFlyerPose () (i, 3);
   for(unsigned i = 0;i < 3; ++i)
     for(unsigned j = 0; j < 3; ++j)
-      baseff[i * 4 + j] = freeFlyerPose () (i, j);
+      baseff_[i * 4 + j] = freeFlyerPose () (i, j);
 
-  controlOut["baseff"].setValues(baseff);
+  controlOut["baseff"].setValues(baseff_);
   sotDEBUGOUT(25) ;
 }
 
-void SoTHRP2Device::updateRobotState(vector<double> &anglesIn)
+void SoTHRP2Device::updateRobotState(const vector<double> &anglesIn)
 {
   sotDEBUGIN(25) ;
-  ml::Vector robotState (anglesIn.size () + 6);
-  for (unsigned i = 0; i < 6; ++i)
-    robotState (i) = 0.;
   for (unsigned i = 0; i < anglesIn.size(); ++i)
-    robotState (i + 6) = anglesIn[i];
-  robotState_.setConstant(robotState);
+    mlRobotState (i + 6) = anglesIn[i];
+  robotState_.setConstant(mlRobotState);
   sotDEBUGOUT(25) ;
 }
 
