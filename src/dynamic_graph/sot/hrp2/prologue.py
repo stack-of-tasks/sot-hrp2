@@ -36,11 +36,11 @@ def prologue_hrp2(robot,device):
         robot.features[i].reference.value = \
         robot.dynamic.signal(i).value
         robot.features[i]._feature.selec.value = '111111'
-        robot.tasks[i].controlGain.value = 180.
+        robot.tasks[i].controlGain.value = 1.
 
     robot.featureComDes.errorIN.value = robot.dynamic.com.value
     robot.featureComDes.selec.value = '111'
-    robot.comTask.controlGain.value = 180.
+    robot.comTask.controlGain.value = 1.
 
     # Push com and feet tasks.
     #
