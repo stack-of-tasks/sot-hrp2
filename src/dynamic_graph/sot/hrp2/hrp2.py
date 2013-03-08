@@ -27,6 +27,14 @@ from dynamic_graph import enableTrace, plug
 
 from dynamic_graph.sot.dynamics.humanoid_robot import AbstractHumanoidRobot
 
+# Internal helper tool.
+def matrixToTuple(M):
+    tmp = M.tolist()
+    res = []
+    for i in tmp:
+        res.append(tuple(i))
+    return tuple(res)
+
 class Hrp2(AbstractHumanoidRobot):
     """
     This class instanciates a Hrp2 robot
@@ -40,6 +48,20 @@ class Hrp2(AbstractHumanoidRobot):
                                (0.,1.,0.,0.),
                                (0.,0.,1.,-0.105),
                                (0.,0.,0.,1.))
+
+    accelerometerPosition = np.matrix ((
+            (1., 0., 0., -.13,),
+            (0., 1., 0., 0.,),
+            (0., 0., 1., .118,),
+            (0., 0., 0., 1.,),
+            ))
+
+    gyrometerPosition = np.matrix ((
+            (1., 0., 0., -.13,),
+            (0., 1., 0., 0.,),
+            (0., 0., 1., .118,),
+            (0., 0., 0., 1.,),
+            ))
 
     def smallToFull(self, config):
         res = (config + 10*(0.,))
@@ -56,6 +78,13 @@ class Hrp2(AbstractHumanoidRobot):
         self.modelName = 'HRP2JRLmainsmall.wrl'
         self.specificitiesPath = xmlDir + '/HRP2SpecificitiesSmall.xml'
         self.jointRankPath = xmlDir + '/HRP2LinkJointRankSmall.xml'
+
+        self.AdditionalFrames.append(
+            ("accelerometer",
+             matrixToTuple(self.accelerometerPosition), "chest"))
+        self.AdditionalFrames.append(
+            ("gyrometer",
+             matrixToTuple(self.gyrometerPosition), "chest"))
 
         self.dynamic = self.loadModelFromJrlDynamics(
             self.name + '_dynamic',
