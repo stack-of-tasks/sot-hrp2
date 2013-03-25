@@ -90,7 +90,7 @@ MACRO(build_hrp2_controller robotnumber)
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-python")
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "sot-core")
 
-  ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
+#  ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
 
   INSTALL(TARGETS ${CONTROLLER_NAME} DESTINATION lib)
 
@@ -104,5 +104,5 @@ MACRO(build_hrp2_controller robotnumber)
 
 ENDMACRO()
 
-build_hrp2_controller("10")
-build_hrp2_controller("14")
+# build_hrp2_controller("10")
+# build_hrp2_controller("14")

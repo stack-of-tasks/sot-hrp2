@@ -19,7 +19,7 @@ INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/lapack.cmake)
 INCLUDE(cmake/cpack.cmake)
-INCLUDE(cmake/ros.cmake)
+# INCLUDE(cmake/ros.cmake)
 
 SET(PROJECT_NAME sot-hrp2)
 SET(PROJECT_DESCRIPTION "dynamic-graph package for HRP-2 robot")
@@ -53,7 +53,7 @@ ADD_REQUIRED_DEPENDENCY("sot-core")
 ADD_REQUIRED_DEPENDENCY("sot-dynamic")
 ADD_REQUIRED_DEPENDENCY("dynamic-graph-python")
 
-ADD_ROSPACK_DEPENDENCY("dynamic_graph_bridge")
+# ADD_ROSPACK_DEPENDENCY("dynamic_graph_bridge")
 # Search for dependencies.
 # Boost
 SET(BOOST_COMPONENTS filesystem system)
