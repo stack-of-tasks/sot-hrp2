@@ -85,6 +85,12 @@ class Hrp2(AbstractHumanoidRobot):
         self.AdditionalFrames.append(
             ("gyrometer",
              matrixToTuple(self.gyrometerPosition), "chest"))
+        self.AdditionalFrames.append(
+            ("leftFootForceSensor",
+             self.forceSensorInLeftAnkle, "left-ankle"))
+        self.AdditionalFrames.append(
+            ("rightFootForceSensor",
+            self.forceSensorInRightAnkle, "right-ankle"))
 
         self.dynamic = self.loadModelFromJrlDynamics(
             self.name + '_dynamic',
