@@ -17,12 +17,10 @@
 from __future__ import print_function
 
 import numpy as np
-from dynamic_graph.sot import SE3, R3, SO3
 from dynamic_graph.sot.core import \
     FeatureGeneric, FeatureJointLimits, Task, Constraint, GainAdaptive, SOT
 from dynamic_graph.sot.dynamics import AngleEstimator
 from dynamic_graph import enableTrace, plug
-from dynamic_graph.sot.se3 import R3, SO3, SE3
 
 # from dynamic_graph.sot.dynamics.dynamic_hrp2 import DynamicHrp2
 # from dynamic_graph.sot.dynamics.dynamic_hrp2_10 import DynamicHrp2_10
