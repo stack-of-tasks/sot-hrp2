@@ -18,7 +18,7 @@ import numpy as np
 from math import sqrt
 from dynamic_graph.sot.hrp2_14.robot import Robot
 from dynamic_graph.sot.core import RPYToMatrix
-from dynamic_graph.sot import SE3, SO3, R3
+from dynamic_graph.sot.tools.se3 import SE3, SO3, R3
 
 robot = Robot ('seqplay')
 rpy2matrix = RPYToMatrix ('rpy2matrix')
