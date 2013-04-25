@@ -92,6 +92,11 @@ MACRO(build_hrp2_controller robotnumber)
 
   ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
 
+  
+  IF(UNIX AND NOT APPLE)
+    TARGET_LINK_LIBRARIES(${CONTROLLER_NAME} ${Boost_LIBRARIES})
+  ENDIF(UNIX AND NOT APPLE)
+
   INSTALL(TARGETS ${CONTROLLER_NAME} DESTINATION lib)
 
   # build python submodule

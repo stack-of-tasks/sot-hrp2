@@ -48,6 +48,9 @@ class SoTHRP2Controller: public
 
   void getControl(std::map<std::string, dgsot::ControlValues> &anglesOut);
 
+  /// Embedded python interpreter accessible via Corba
+  boost::shared_ptr<dynamicgraph::Interpreter> interpreter_;
+
  protected:
   // Update output port with the control computed from the
   // dynamic graph.
@@ -59,8 +62,6 @@ class SoTHRP2Controller: public
   
   virtual void startupPython();
     
-  /// Embedded python interpreter accessible via Corba
-  dynamicgraph::Interpreter interpreter_;
 
   SoTHRP2Device device_;
 };

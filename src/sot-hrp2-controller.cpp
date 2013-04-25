@@ -20,19 +20,44 @@
 #include <dynamic_graph_bridge/ros_init.hh>
 #include "sot-hrp2-controller.hh"
 
+#include <boost/thread/thread.hpp>
+#include <boost/thread/condition.hpp>
 const std::string SoTHRP2Controller::LOG_PYTHON="/tmp/HRP2Controller_python.out";
 
 using namespace std;
 
+boost::condition_variable cond;
+boost::mutex mut;
+bool data_ready;
+
+void workThread(SoTHRP2Controller *aSoTHRP2C)
+{
+  
+  dynamicgraph::Interpreter aLocalInterpreter(dynamicgraph::rosInit(false,true));
+
+  aSoTHRP2C->interpreter_ = 
+    boost::make_shared<dynamicgraph::Interpreter>(aLocalInterpreter);
+  std::cout << "Going through the thread." << std::endl;
+  {
+    boost::lock_guard<boost::mutex> lock(mut);
+    data_ready=true;
+  }
+  cond.notify_all();
+  ros::waitForShutdown();
+}
+
 SoTHRP2Controller::SoTHRP2Controller(std::string RobotName):
-  interpreter_(dynamicgraph::rosInit(false)),
   device_(RobotName)
 {
 
+  std::cout << "Going through SoTHRP2Controller." << std::endl;
+  boost::thread thr(workThread,this);
   sotDEBUG(25) << __FILE__ << ":" 
 	       << __FUNCTION__ <<"(#" 
 	       << __LINE__ << " )" << std::endl;
 
+  boost::unique_lock<boost::mutex> lock(mut);
+  cond.wait(lock);
 }
 
 SoTHRP2Controller::~SoTHRP2Controller()
@@ -105,15 +130,15 @@ void SoTHRP2Controller::
 startupPython()
 {
   std::ofstream aof(LOG_PYTHON.c_str());
-  runPython (aof, "import sys, os", interpreter_);
-  runPython (aof, "pythonpath = os.environ['PYTHONPATH']", interpreter_);
-  runPython (aof, "path = []", interpreter_);
+  runPython (aof, "import sys, os", *interpreter_);
+  runPython (aof, "pythonpath = os.environ['PYTHONPATH']", *interpreter_);
+  runPython (aof, "path = []", *interpreter_);
   runPython (aof,
 	     "for p in pythonpath.split(':'):\n"
 	     "  if p not in sys.path:\n"
-	     "    path.append(p)", interpreter_);
-  runPython (aof, "path.extend(sys.path)", interpreter_);
-  runPython (aof, "sys.path = path", interpreter_);
+	     "    path.append(p)", *interpreter_);
+  runPython (aof, "path.extend(sys.path)", *interpreter_);
+  runPython (aof, "sys.path = path", *interpreter_);
 
   // Calling again rosInit here to start the spinner. It will
   // deal with topics and services callbacks in a separate, non

@@ -36,7 +36,7 @@ void SoTHRP2_14_Controller::startupPython()
   runPython
     (aof,
      "from dynamic_graph.sot.hrp2_14.prologue import robot, solver",
-     interpreter_);
+     *interpreter_);
   aof.close();
 }
 

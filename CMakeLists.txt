@@ -56,7 +56,7 @@ ADD_REQUIRED_DEPENDENCY("dynamic-graph-python")
 ADD_ROSPACK_DEPENDENCY("dynamic_graph_bridge")
 # Search for dependencies.
 # Boost
-SET(BOOST_COMPONENTS filesystem system)
+SET(BOOST_COMPONENTS filesystem system thread)
 SEARCH_FOR_BOOST()
 
 # Handle rpath necessary to handle ROS multiplace packages
