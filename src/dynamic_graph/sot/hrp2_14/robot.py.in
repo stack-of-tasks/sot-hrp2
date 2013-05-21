@@ -20,7 +20,7 @@ import numpy as np
 
 from dynamic_graph.sot.hrp2.dynamic_hrp2_14 import DynamicHrp2_14
 
-hrp2_14_pkgdatarootdir = "@HRP2_14_PKGDATAROOTDIR@"
+hrp2_14_pkgdatarootdir = "@HRP2_14_PKGDATAROOTDIR@/hrp2-14"
 
 # Internal helper tool.
 def matrixToTuple(M):

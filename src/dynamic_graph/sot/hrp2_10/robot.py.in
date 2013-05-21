@@ -18,7 +18,7 @@ from __future__ import print_function
 from dynamic_graph.sot.hrp2 import Hrp2
 import numpy as np
 from dynamic_graph.sot.hrp2.dynamic_hrp2_10 import DynamicHrp2_10
-hrp2_10_pkgdatarootdir = "@HRP2_10_PKGDATAROOTDIR@"
+hrp2_10_pkgdatarootdir = "@HRP2_10_PKGDATAROOTDIR@/hrp2-10"
 
 class Robot (Hrp2):
     """
