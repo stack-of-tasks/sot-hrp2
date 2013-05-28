@@ -102,7 +102,7 @@ class Hrp2(AbstractHumanoidRobot):
 
         self.dimension = self.dynamic.getDimension()
         if self.dimension != len(self.halfSitting):
-            raise RuntimeError("invalid half-sitting pose")
+            raise RuntimeError("Dimension of half-sitting: {0} differs from dimension of robot: {1}".format (len(self.halfSitting), self.dimension))
         self.initializeRobot()
 
 __all__ = [Hrp2]
