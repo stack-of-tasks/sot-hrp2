@@ -15,8 +15,8 @@
 # dynamic-graph. If not, see <http://www.gnu.org/licenses/>.
 print("Prologue HRP2-14")
 
-from dynamic_graph.sot.hrp2_14.robot import *
-from dynamic_graph.sot.hrp2.prologue import *
+from dynamic_graph.entity import PyEntityFactoryClass
+from dynamic_graph.sot.hrp2_14.robot import Robot
 
 # Create the device.
 # This entity behaves exactly like robotsimu except:
@@ -24,14 +24,15 @@ from dynamic_graph.sot.hrp2.prologue import *
 # 2. it forwards the robot control to the sot-abstract
 #    controller.
 Device = PyEntityFactoryClass('Device')
-# Create instance for HRP2JRL
-device=Device('HRP2LAAS')
 
 # Create the robot using the device.
-robot = Robot(name = 'robot', device = device)
+robot = Robot(name = 'robot', device = Device('HRP2LAAS'))
 
-solver = prologue_hrp2(robot,device)
-__all__ = ["robot","solver"]
+robot.dynamic.com.recompute (0)
+_com = robot.dynamic.com.value
+robot.device.zmp.value = (_com[0], _com[1], 0.)
+
+__all__ = ["robot"]
 
 ####################################
 #        --- IMPORTANT ---         #

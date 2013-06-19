@@ -59,7 +59,6 @@ SET(PYTHON_MODULE_BUILD_DIR
 SET(PYTHON_MODULE dynamic_graph/sot/hrp2)
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "hrp2.py" )
-PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py" )
 SET(FILES __init__.py robot.py)
 
 # Install dynamic_graph.sot.hrp2_14
