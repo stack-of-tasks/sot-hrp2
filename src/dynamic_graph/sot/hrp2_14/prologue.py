@@ -20,7 +20,7 @@ from dynamic_graph.sot.hrp2_14.robot import Robot
 
 # Create the device.
 # This entity behaves exactly like robotsimu except:
-# 1. it does not provide the increment method
+# 1. it does not provide the increment command
 # 2. it forwards the robot control to the sot-abstract
 #    controller.
 Device = PyEntityFactoryClass('Device')
