@@ -74,40 +74,64 @@ SoTHRP2Device::~SoTHRP2Device()
 void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   sotDEBUGIN(25) ;
-  const vector<double>& anglesIn = SensorsIn["joints"].getValues();
+  map<string,dgsot::SensorValues>::iterator it;
   int t = stateSOUT.getTime () + 1;
 
-  // Implements force recollection.
-  const vector<double>& forcesIn = SensorsIn["forces"].getValues();
-  for(int i=0;i<4;++i)
+  it = SensorsIn.find("forces");
+  if (it!=SensorsIn.end())
     {
-      for(int j=0;j<6;++j)
-	mlforces(j) = forcesIn[i*6+j];
-      forcesSOUT[i]->setConstant(mlforces);
-      forcesSOUT[i]->setTime (t);
+
+      // Implements force recollection.
+      const vector<double>& forcesIn = it->second.getValues();
+      for(int i=0;i<4;++i)
+        {
+          for(int j=0;j<6;++j)
+            mlforces(j) = forcesIn[i*6+j];
+          forcesSOUT[i]->setConstant(mlforces);
+          forcesSOUT[i]->setTime (t);
+        }
     }
 
-  const vector<double>& attitude = SensorsIn ["attitude"].getValues ();
-  for (unsigned int i = 0; i < 3; ++i)
-    for (unsigned int j = 0; j < 3; ++j)
-      pose (i, j) = attitude [i * 3 + j];
-  attitudeSOUT.setConstant (pose);
-  attitudeSOUT.setTime (t);
+  it = SensorsIn.find("attitude");
+  if (it!=SensorsIn.end())
+    {
+      const vector<double>& attitude = it->second.getValues ();
+      for (unsigned int i = 0; i < 3; ++i)
+        for (unsigned int j = 0; j < 3; ++j)
+          pose (i, j) = attitude [i * 3 + j];
+      attitudeSOUT.setConstant (pose);
+      attitudeSOUT.setTime (t);
+    }
 
-  const vector<double>& accelerometer = 
-    SensorsIn ["accelerometer_0"].getValues ();
-  const vector<double>& gyrometer = SensorsIn ["gyrometer_0"].getValues ();
-  for (std::size_t i=0; i<3; ++i) {
-    accelerometer_ (i) = accelerometer [i];
-    gyrometer_ (i) = gyrometer [i];
-  }
-  accelerometerSOUT_.setConstant (accelerometer_);
-  gyrometerSOUT_.setConstant (gyrometer_);
+  it = SensorsIn.find("joints");
+  if (it!=SensorsIn.end())
+    {
+      const vector<double>& anglesIn = it->second.getValues();
+      mlRobotState.resize (anglesIn.size () + 6);
+      for (unsigned i = 0; i < 6; ++i)
+        mlRobotState (i) = 0.;
+      updateRobotState(anglesIn);
+    }
+
+  it = SensorsIn.find("accelerometer_0");
+  if (it!=SensorsIn.end())
+    {
+      const vector<double>& accelerometer = 
+        SensorsIn ["accelerometer_0"].getValues ();
+      for (std::size_t i=0; i<3; ++i) 
+        accelerometer_ (i) = accelerometer [i];
+      accelerometerSOUT_.setConstant (accelerometer_);
+    }
+
+  it = SensorsIn.find("gyrometer_0");
+  if (it!=SensorsIn.end())
+    {
+      const vector<double>& gyrometer = SensorsIn ["gyrometer_0"].getValues ();
+      for (std::size_t i=0; i<3; ++i) 
+        gyrometer_ (i) = gyrometer [i];
+      gyrometerSOUT_.setConstant (gyrometer_);
+    }
   
-  mlRobotState.resize (anglesIn.size () + 6);
-  for (unsigned i = 0; i < 6; ++i)
-    mlRobotState (i) = 0.;
-  updateRobotState(anglesIn);
   sotDEBUGOUT(25);
 }
 
