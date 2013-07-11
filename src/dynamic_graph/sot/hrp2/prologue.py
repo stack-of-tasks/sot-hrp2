@@ -49,7 +49,6 @@ def prologue_hrp2(robot,device):
     for i in s:
         solver.push(robot.tasks[i])
 
-    solver.push (robot.tasks ['posture'])
     print("Prologue ran successfully.")
 
     # Make sure only robot and solver are visible from the outside.
