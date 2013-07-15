@@ -27,6 +27,7 @@ SoTHRP2_10_Controller::SoTHRP2_10_Controller():
   SoTHRP2Controller(ROBOTNAME)
 {
   startupPython();
+  interpreter_->startRosService ();
 }
 
 void SoTHRP2_10_Controller::startupPython()
