@@ -161,7 +161,8 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   increment(timestep_);
 
   sotDEBUG (25) << "state = " << state_ << std::endl;
-  sotDEBUG (25) << "diff  = " << state_ - previousState_ << std::endl;
+  sotDEBUG (25) << "diff  = " << ((previousState_.size() == state_.size())?
+                   (state_ - previousState_) : state_ ) << std::endl;
   previousState_ = state_;
 
   // Specify the joint values for the controller.
