@@ -37,7 +37,7 @@ void SoTHRP2_10_Controller::startupPython()
   std::ofstream aof(LOG_PYTHON_10.c_str());
   runPython
     (aof,
-     "from dynamic_graph.sot.hrp2_10.prologue import robot, solver",
+     "from dynamic_graph.sot.hrp2_10.prologue import robot",
      *interpreter_);
   aof.close();
 }

@@ -15,11 +15,12 @@
 # dynamic-graph. If not, see <http://www.gnu.org/licenses/>.
 print("Prologue HRP2-10")
 
+from dynamic_graph.entity import PyEntityFactoryClass
 from dynamic_graph.sot.hrp2_10.robot import Robot
 
 # Create the device.
 # This entity behaves exactly like robotsimu except:
-# 1. it does not provide the increment method
+# 1. it does not provide the increment command
 # 2. it forwards the robot control to the sot-abstract
 #    controller.
 Device = PyEntityFactoryClass('Device')
@@ -27,6 +28,7 @@ Device = PyEntityFactoryClass('Device')
 # Create the robot using the device.
 robot = Robot(name = 'robot', device = Device('HRP2JRL'))
 
+robot.dynamic.com.recompute (0)
 _com = robot.dynamic.com.value
 robot.device.zmp.value = (_com[0], _com[1], 0.)
 
