@@ -20,6 +20,14 @@ import numpy as np
 from dynamic_graph.sot.hrp2.dynamic_hrp2_10 import DynamicHrp2_10
 hrp2_10_pkgdatarootdir = "@HRP2_10_PKGDATAROOTDIR@/hrp2-10"
 
+# Internal helper tool.
+def matrixToTuple(M):
+    tmp = M.tolist()
+    res = []
+    for i in tmp:
+        res.append(tuple(i))
+    return tuple(res)
+
 class Robot (Hrp2):
     """
     This class instanciates LAAS Hrp2 robot
