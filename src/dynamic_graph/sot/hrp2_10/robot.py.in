@@ -48,8 +48,8 @@ class Robot (Hrp2):
 
         # Define camera positions w.r.t gaze.
 
-        # These positions have been copied from hrp2.geom and
-        # roughly checked. Do not trust them too much.
+        # These positions have been copied from hrp2_10.urdf
+        # except for cameraTopLeftPosition and cameraTopRightPosition
         cameraBottomLeftPosition = np.matrix((
                 (0.98703661, 0.05887354, 0.14930717, 0.0514675),
                 (-0.06015316, 0.99818088, 0.00406493, 0.06761652),
