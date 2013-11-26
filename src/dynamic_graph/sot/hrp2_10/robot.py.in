@@ -102,8 +102,9 @@ class Robot (Hrp2):
              [ 0.,  0.,  0., 1.]])
 
         for camera in [cameraBottomLeftPosition, cameraBottomRightPosition,
-                       cameraTopLeftPosition, cameraTopRightPosition]:
-            camera = camera * c1_M_c
+                       cameraTopLeftPosition, cameraTopRightPosition,
+                       cameraXtionRGBPosition]:
+            camera[:] = camera * c1_M_c
 
         self.AdditionalFrames.append(
                 ("cameraBottomLeft",
