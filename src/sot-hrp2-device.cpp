@@ -42,6 +42,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   pose (),
   accelerometer_ (3),
   gyrometer_ (3),
+  torques_(),
   baseff_ ()
 {
   sotDEBUGIN(25) ;
@@ -130,6 +131,16 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
       for (std::size_t i=0; i<3; ++i) 
         gyrometer_ (i) = gyrometer [i];
       gyrometerSOUT_.setConstant (gyrometer_);
+    }
+
+  it = SensorsIn.find("torques");
+  if (it!=SensorsIn.end())
+    {
+      const std::vector<double>& torques = SensorsIn["torques"].getValues();
+      torques_.resize(torques.size());
+      for(std::size_t i = 0; i < torques.size(); ++i)
+        torques_ (i) = torques [i];
+      pseudoTorqueSOUT.setConstant(torques_);
     }
   
   sotDEBUGOUT(25);

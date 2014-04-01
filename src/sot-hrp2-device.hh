@@ -85,5 +85,6 @@ protected:
   ml::Vector accelerometer_;
   ml::Vector gyrometer_;
   std::vector<double> baseff_;
+  ml::Vector torques_;
 };
 #endif /* _SOT_HRP2Device_H_*/
