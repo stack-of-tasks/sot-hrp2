@@ -6,7 +6,7 @@
  * LAAS, CNRS
  *
  * This file is part of HRP2Controller.
- * HRP2Controller is not a free software, 
+ * HRP2Controller is not a free software,
  * it contains information related to HRP-2 which involves
  * that you either purchased the proper license to havec access to
  * those informations, or that you signed the appropriate
@@ -29,16 +29,16 @@
 namespace dgsot=dynamicgraph::sot;
 
 class SoTHRP2Device: public 
-dgsot::Device
+    dgsot::Device
 {
- public:
+public:
 
   static const std::string CLASS_NAME;
   static const double TIMESTEP_DEFAULT;
 
-  virtual const std::string& getClassName () const		
-  {  
-    return CLASS_NAME;							    
+  virtual const std::string& getClassName () const
+  {
+    return CLASS_NAME;
   }
   
   SoTHRP2Device(std::string RobotName);

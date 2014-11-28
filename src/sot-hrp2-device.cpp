@@ -6,7 +6,7 @@
  * LAAS, CNRS
  *
  * This file is part of HRP2Controller.
- * HRP2Controller is not a free software, 
+ * HRP2Controller is not a free software,
  * it contains information related to HRP-2 which involves
  * that you either purchased the proper license to have access to
  * those informations, or that you signed the appropriate
@@ -57,14 +57,14 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   std::string docstring;
   /* Command increment. */
   docstring =
-    "\n"
-    "    Integrate dynamics for time step provided as input\n"
-    "\n"
-    "      take one floating point number as input\n"
-    "\n";
+      "\n"
+      "    Integrate dynamics for time step provided as input\n"
+      "\n"
+      "      take one floating point number as input\n"
+      "\n";
   addCommand("increment",
-	     makeCommandVoid1((Device&)*this,
-			      &Device::increment, docstring));
+             makeCommandVoid1((Device&)*this,
+                              &Device::increment, docstring));
   
   sotDEBUGOUT(25);
 }
@@ -117,9 +117,9 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
   it = SensorsIn.find("accelerometer_0");
   if (it!=SensorsIn.end())
     {
-      const vector<double>& accelerometer = 
-        SensorsIn ["accelerometer_0"].getValues ();
-      for (std::size_t i=0; i<3; ++i) 
+      const vector<double>& accelerometer =
+          SensorsIn ["accelerometer_0"].getValues ();
+      for (std::size_t i=0; i<3; ++i)
         accelerometer_ (i) = accelerometer [i];
       accelerometerSOUT_.setConstant (accelerometer_);
     }
@@ -128,7 +128,7 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
   if (it!=SensorsIn.end())
     {
       const vector<double>& gyrometer = SensorsIn ["gyrometer_0"].getValues ();
-      for (std::size_t i=0; i<3; ++i) 
+      for (std::size_t i=0; i<3; ++i)
         gyrometer_ (i) = gyrometer [i];
       gyrometerSOUT_.setConstant (gyrometer_);
     }
@@ -173,7 +173,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 
   sotDEBUG (25) << "state = " << state_ << std::endl;
   sotDEBUG (25) << "diff  = " << ((previousState_.size() == state_.size())?
-                   (state_ - previousState_) : state_ ) << std::endl;
+                                    (state_ - previousState_) : state_ ) << std::endl;
   previousState_ = state_;
 
   // Specify the joint values for the controller.
