@@ -73,14 +73,47 @@ PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
 PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
 PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
 
-# Add the library to wrap the controller of HRP2-JRL.
+# Add the library to wrap the device of HRP2.
+MACRO(build_hrp2_device)
+
+  SET(DEVICE_NAME sot-hrp2-device)
+  ADD_LIBRARY(${DEVICE_NAME}
+    SHARED
+    sot-hrp2-device.cpp
+  )
+
+  # Link the dynamic library containing the SoT with its dependencies.
+  PKG_CONFIG_USE_DEPENDENCY(${DEVICE_NAME} "dynamic-graph")
+  PKG_CONFIG_USE_DEPENDENCY(${DEVICE_NAME} "dynamic-graph-python")
+  PKG_CONFIG_USE_DEPENDENCY(${DEVICE_NAME} "sot-core")
+
+  ROSPACK_USE_DEPENDENCY(${DEVICE_NAME} "dynamic_graph_bridge")
+
+  IF(UNIX AND NOT APPLE)
+    TARGET_LINK_LIBRARIES(${DEVICE_NAME} ${Boost_LIBRARIES})
+  ENDIF(UNIX AND NOT APPLE)
+
+  INSTALL(TARGETS ${DEVICE_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+  # build python submodule
+  STRING(REPLACE - _ PYTHON_LIBRARY_NAME ${DEVICE_NAME})
+  SET(NEW_ENTITY_CLASS ${ENTITIES})
+  DYNAMIC_GRAPH_PYTHON_MODULE("sot/hrp2/${PYTHON_LIBRARY_NAME}"
+    ${DEVICE_NAME}
+    sot-hrp2-${PYTHON_LIBRARY_NAME}-wrap
+    )
+
+ENDMACRO()
+
+build_hrp2_device()
+
+# Add the library to wrap the controller of HRP2.
 MACRO(build_hrp2_controller robotnumber)
 
   SET(CONTROLLER_NAME sot-hrp2-${robotnumber}-controller)
   ADD_LIBRARY(${CONTROLLER_NAME}
     SHARED
     sot-hrp2-controller.cpp
-    sot-hrp2-device.cpp
     sot-hrp2-${robotnumber}-controller.cpp
   )
 
@@ -91,6 +124,9 @@ MACRO(build_hrp2_controller robotnumber)
 
   ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
 
+  ADD_DEPENDENCIES(${CONTROLLER_NAME} "sot-hrp2-device")
+  TARGET_LINK_LIBRARIES(${CONTROLLER_NAME} "sot-hrp2-device")
+
   
   IF(UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(${CONTROLLER_NAME} ${Boost_LIBRARIES})
@@ -98,15 +134,8 @@ MACRO(build_hrp2_controller robotnumber)
 
   INSTALL(TARGETS ${CONTROLLER_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-  # build python submodule
-  STRING(REPLACE - _ PYTHON_LIBRARY_NAME ${CONTROLLER_NAME})
-  SET(NEW_ENTITY_CLASS ${ENTITIES})
-  DYNAMIC_GRAPH_PYTHON_MODULE("sot/hrp2/${PYTHON_LIBRARY_NAME}"
-    ${CONTROLLER_NAME}
-    sot-hrp2-${PYTHON_LIBRARY_NAME}-wrap
-    )
-
 ENDMACRO()
 
 build_hrp2_controller("10")
 build_hrp2_controller("14")
+
