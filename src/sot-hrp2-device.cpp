@@ -80,68 +80,74 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
 
   it = SensorsIn.find("forces");
   if (it!=SensorsIn.end())
-    {
+  {
 
-      // Implements force recollection.
-      const vector<double>& forcesIn = it->second.getValues();
-      for(int i=0;i<4;++i)
-        {
-          for(int j=0;j<6;++j)
-            mlforces(j) = forcesIn[i*6+j];
-          forcesSOUT[i]->setConstant(mlforces);
-          forcesSOUT[i]->setTime (t);
-        }
+    // Implements force recollection.
+    const vector<double>& forcesIn = it->second.getValues();
+    for(int i=0;i<4;++i)
+    {
+      for(int j=0;j<6;++j)
+        mlforces(j) = forcesIn[i*6+j];
+      forcesSOUT[i]->setConstant(mlforces);
+      forcesSOUT[i]->setTime (t);
     }
+  }
 
   it = SensorsIn.find("attitude");
   if (it!=SensorsIn.end())
-    {
-      const vector<double>& attitude = it->second.getValues ();
-      for (unsigned int i = 0; i < 3; ++i)
-        for (unsigned int j = 0; j < 3; ++j)
-          pose (i, j) = attitude [i * 3 + j];
-      attitudeSOUT.setConstant (pose);
-      attitudeSOUT.setTime (t);
-    }
+  {
+    const vector<double>& attitude = it->second.getValues ();
+    for (unsigned int i = 0; i < 3; ++i)
+      for (unsigned int j = 0; j < 3; ++j)
+        pose (i, j) = attitude [i * 3 + j];
+    attitudeSOUT.setConstant (pose);
+    attitudeSOUT.setTime (t);
+  }
 
   it = SensorsIn.find("joints");
   if (it!=SensorsIn.end())
-    {
-      const vector<double>& anglesIn = it->second.getValues();
-      mlRobotState.resize (anglesIn.size () + 6);
-      for (unsigned i = 0; i < 6; ++i)
-        mlRobotState (i) = 0.;
-      updateRobotState(anglesIn);
-    }
+  {
+    const vector<double>& anglesIn = it->second.getValues();
+    mlRobotState.resize (anglesIn.size () + 6);
+    for (unsigned i = 0; i < 6; ++i)
+      mlRobotState (i) = 0.;
+    for (unsigned i = 0; i < anglesIn.size(); ++i)
+      mlRobotState (i + 6) = anglesIn[i];
+    robotState_.setConstant(mlRobotState);
+    robotState_.setTime(t);
+  }
 
   it = SensorsIn.find("accelerometer_0");
   if (it!=SensorsIn.end())
-    {
-      const vector<double>& accelerometer =
-          SensorsIn ["accelerometer_0"].getValues ();
-      for (std::size_t i=0; i<3; ++i)
-        accelerometer_ (i) = accelerometer [i];
-      accelerometerSOUT_.setConstant (accelerometer_);
-    }
+  {
+    const vector<double>& accelerometer =
+        SensorsIn ["accelerometer_0"].getValues ();
+    for (std::size_t i=0; i<3; ++i)
+      accelerometer_ (i) = accelerometer [i];
+    accelerometerSOUT_.setConstant (accelerometer_);
+    accelerometerSOUT_.setTime (t);
+  }
 
   it = SensorsIn.find("gyrometer_0");
   if (it!=SensorsIn.end())
-    {
-      const vector<double>& gyrometer = SensorsIn ["gyrometer_0"].getValues ();
-      for (std::size_t i=0; i<3; ++i)
-        gyrometer_ (i) = gyrometer [i];
-      gyrometerSOUT_.setConstant (gyrometer_);
-    }
+  {
+    const vector<double>& gyrometer = SensorsIn ["gyrometer_0"].getValues ();
+    for (std::size_t i=0; i<3; ++i)
+      gyrometer_ (i) = gyrometer [i];
+    gyrometerSOUT_.setConstant (gyrometer_);
+    gyrometerSOUT_.setTime (t);
+  }
 
   it = SensorsIn.find("torques");
   if (it!=SensorsIn.end())
-    {
-      const std::vector<double>& torques = SensorsIn["torques"].getValues();
-      torques_.resize(torques.size());
-      for(std::size_t i = 0; i < torques.size(); ++i)
-        torques_ (i) = torques [i];
-      pseudoTorqueSOUT.setConstant(torques_);
-    }
+  {
+    const std::vector<double>& torques = SensorsIn["torques"].getValues();
+    torques_.resize(torques.size());
+    for(std::size_t i = 0; i < torques.size(); ++i)
+      torques_ (i) = torques [i];
+    pseudoTorqueSOUT.setConstant(torques_);
+    pseudoTorqueSOUT.setTime(t);
+  }
   
   sotDEBUGOUT(25);
 }
@@ -150,7 +156,6 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   setSensors (SensorsIn);
 }
-
 
 void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
@@ -212,13 +217,3 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   controlOut["baseff"].setValues(baseff_);
   sotDEBUGOUT(25) ;
 }
-
-void SoTHRP2Device::updateRobotState(const vector<double> &anglesIn)
-{
-  sotDEBUGIN(25) ;
-  for (unsigned i = 0; i < anglesIn.size(); ++i)
-    mlRobotState (i + 6) = anglesIn[i];
-  robotState_.setConstant(mlRobotState);
-  sotDEBUGOUT(25) ;
-}
-
