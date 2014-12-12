@@ -111,7 +111,10 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
       mlRobotState.resize (anglesIn.size () + 6);
       for (unsigned i = 0; i < 6; ++i)
         mlRobotState (i) = 0.;
-      updateRobotState(anglesIn);
+      for (unsigned i = 0; i < anglesIn.size(); ++i)
+        mlRobotState (i + 6) = anglesIn[i];
+      robotState_.setConstant(mlRobotState);
+      robotState_.setTime(t);
     }
 
   it = SensorsIn.find("accelerometer_0");
@@ -122,6 +125,7 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
       for (std::size_t i=0; i<3; ++i)
         accelerometer_ (i) = accelerometer [i];
       accelerometerSOUT_.setConstant (accelerometer_);
+      accelerometerSOUT_.setTime (t);
     }
 
   it = SensorsIn.find("gyrometer_0");
@@ -131,6 +135,7 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
       for (std::size_t i=0; i<3; ++i)
         gyrometer_ (i) = gyrometer [i];
       gyrometerSOUT_.setConstant (gyrometer_);
+      gyrometerSOUT_.setTime (t);
     }
 
   it = SensorsIn.find("torques");
@@ -141,6 +146,7 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
       for(std::size_t i = 0; i < torques.size(); ++i)
         torques_ (i) = torques [i];
       pseudoTorqueSOUT.setConstant(torques_);
+      pseudoTorqueSOUT.setTime(t);
     }
   
   sotDEBUGOUT(25);
@@ -150,7 +156,6 @@ void SoTHRP2Device::setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   setSensors (SensorsIn);
 }
-
 
 void SoTHRP2Device::nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
@@ -212,13 +217,3 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   controlOut["baseff"].setValues(baseff_);
   sotDEBUGOUT(25) ;
 }
-
-void SoTHRP2Device::updateRobotState(const vector<double> &anglesIn)
-{
-  sotDEBUGIN(25) ;
-  for (unsigned i = 0; i < anglesIn.size(); ++i)
-    mlRobotState (i + 6) = anglesIn[i];
-  robotState_.setConstant(mlRobotState);
-  sotDEBUGOUT(25) ;
-}
-
