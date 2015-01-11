@@ -60,7 +60,7 @@ protected:
   double timestep_;
   
   /// \brief Previous robot configuration.
-  maal::boost::Vector previousState_;
+  dynamicgraph::Vector previousState_;
   
   /// \brief Robot state provided by OpenHRP.
   ///
@@ -68,19 +68,19 @@ protected:
   /// account the stabilization step. Therefore, this usually
   /// does *not* match the state control input signal.
   ///
-  dynamicgraph::Signal<ml::Vector, int> robotState_;
+  dynamicgraph::Signal<dynamicgraph::Vector, int> robotState_;
 
   /// Accelerations measured by accelerometers
-  dynamicgraph::Signal <ml::Vector, int> accelerometerSOUT_;
+  dynamicgraph::Signal <dynamicgraph::Vector, int> accelerometerSOUT_;
   /// Rotation velocity measured by gyrometers
-  dynamicgraph::Signal <ml::Vector, int> gyrometerSOUT_;
+  dynamicgraph::Signal <dynamicgraph::Vector, int> gyrometerSOUT_;
 
   /// Intermediate variables to avoid allocation during control
-  ml::Vector mlforces;
-  ml::Vector mlRobotState;
+  dynamicgraph::Vector mlforces;
+  dynamicgraph::Vector mlRobotState;
   dgsot::MatrixRotation pose;
-  ml::Vector accelerometer_;
-  ml::Vector gyrometer_;
+  dynamicgraph::Vector accelerometer_;
+  dynamicgraph::Vector gyrometer_;
   std::vector<double> baseff_;
   ml::Vector torques_;
 };
