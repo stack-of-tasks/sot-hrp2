@@ -101,6 +101,9 @@ class Hrp2(AbstractHumanoidRobot):
             dynamicType)
 
         self.dimension = self.dynamic.getDimension()
+        
+        self.plugVelocityFromDevice = True
+
         if self.dimension != len(self.halfSitting):
             raise RuntimeError("Dimension of half-sitting: {0} differs from dimension of robot: {1}".format (len(self.halfSitting), self.dimension))
         self.initializeRobot()
