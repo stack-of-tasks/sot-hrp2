@@ -41,14 +41,23 @@ FUNCTION(COMPILE_PLUGIN NAME SOURCES ENTITIES)
 ENDFUNCTION()
 
 # Compile plug-ins.
-COMPILE_PLUGIN(dynamic-hrp2_14 dynamic-hrp2_14.cc DynamicHrp2_14)
-PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_14 hrp2-dynamics)
+IF (hrp2-dynamics_FOUND)
+  COMPILE_PLUGIN(dynamic-hrp2_14 dynamic-hrp2_14.cc DynamicHrp2_14)
+  PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_14 hrp2-dynamics)
+ENDIF()
 
-COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
-PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_10 hrp2-10-optimized)
+IF (hrp2-10-optimized_FOUND)
+  COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
+  PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_10 hrp2-10-optimized)
+ENDIF()
 
-CONFIG_FILES(dynamic_graph/sot/hrp2_10/robot.py)
-CONFIG_FILES(dynamic_graph/sot/hrp2_14/robot.py)
+IF (hrp2-10-optimized_FOUND)
+  CONFIG_FILES(dynamic_graph/sot/hrp2_10/robot.py)
+ENDIF()
+
+IF (hrp2-dynamics_FOUND)
+  CONFIG_FILES(dynamic_graph/sot/hrp2_14/robot.py)
+ENDIF()
 
 # Install Python files.
 SET(PYTHON_MODULE_DIR
@@ -62,16 +71,20 @@ PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "hrp2.py" )
 SET(FILES __init__.py robot.py)
 
 # Install dynamic_graph.sot.hrp2_14
-SET(PYTHON_MODULE dynamic_graph/sot/hrp2_14)
-PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
-PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
-PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
+IF (hrp2-dynamics_FOUND)
+  SET(PYTHON_MODULE dynamic_graph/sot/hrp2_14)
+  PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
+  PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
+  PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
+ENDIF()
 
 # Install dynamic_graph.sot.hrp2_10
-SET(PYTHON_MODULE dynamic_graph/sot/hrp2_10)
-PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
-PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
-PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
+IF (hrp2-10-optimized_FOUND)
+  SET(PYTHON_MODULE dynamic_graph/sot/hrp2_10)
+  PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
+  PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
+  PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "prologue.py")
+ENDIF()
 
 # Add the library to wrap the device of HRP2.
 MACRO(build_hrp2_device)
@@ -136,6 +149,11 @@ MACRO(build_hrp2_controller robotnumber)
 
 ENDMACRO()
 
-build_hrp2_controller("10")
-build_hrp2_controller("14")
+IF (hrp2-10-optimized_FOUND)
+  build_hrp2_controller("10")
+ENDIF()
+
+IF (hrp2-dynamics_FOUND)
+  build_hrp2_controller("14")
+ENDIF()
 
