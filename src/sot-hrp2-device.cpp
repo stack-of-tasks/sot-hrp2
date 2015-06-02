@@ -172,10 +172,9 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   sotDEBUGIN(25) ;
   vector<double> anglesOut;
   anglesOut.resize(state_.size());
-
+  
   // Integrate control
   increment(timestep_);
-
   sotDEBUG (25) << "state = " << state_ << std::endl;
   sotDEBUG (25) << "diff  = " << ((previousState_.size() == state_.size())?
                                     (state_ - previousState_) : state_ ) << std::endl;
@@ -188,7 +187,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   for(unsigned int i=6; i < state_.size();++i)
     anglesOut[i-6] = state_(i);
   controlOut["joints"].setValues(anglesOut);
-  
+
   // Read zmp reference from input signal if plugged
   int time = controlSIN.getTime ();
   zmpSIN.recompute (time + 1);
@@ -206,7 +205,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 
   controlOut["zmp"].setName("zmp");
   controlOut["zmp"].setValues(ZMPRef);
-  
+
   // Update position of freeflyer in global frame
   for (int i = 0;i < 3; ++i)
     baseff_[i*4+3] = freeFlyerPose () (i, 3);

@@ -41,21 +41,23 @@ FUNCTION(COMPILE_PLUGIN NAME SOURCES ENTITIES)
 ENDFUNCTION()
 
 # Compile plug-ins.
-IF (hrp2-dynamics_FOUND)
+IF (HRP2_DYNAMICS_FOUND)
+  MESSAGE(STATUS "Add dynamic-hrp2_14 plugin")
   COMPILE_PLUGIN(dynamic-hrp2_14 dynamic-hrp2_14.cc DynamicHrp2_14)
   PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_14 hrp2-dynamics)
 ENDIF()
 
-IF (hrp2-10-optimized_FOUND)
+IF (HRP2_10_OPTIMIZED_FOUND)
+  MESSAGE(STATUS "Add dynamic-hrp2_10 plugin")
   COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
   PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_10 hrp2-10-optimized)
 ENDIF()
 
-IF (hrp2-10-optimized_FOUND)
+IF (HRP2_10_OPTIMIZED_FOUND)
   CONFIG_FILES(dynamic_graph/sot/hrp2_10/robot.py)
 ENDIF()
 
-IF (hrp2-dynamics_FOUND)
+IF (HRP2_DYNAMICS_FOUND)
   CONFIG_FILES(dynamic_graph/sot/hrp2_14/robot.py)
 ENDIF()
 
@@ -71,7 +73,7 @@ PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "hrp2.py" )
 SET(FILES __init__.py robot.py)
 
 # Install dynamic_graph.sot.hrp2_14
-IF (hrp2-dynamics_FOUND)
+IF (HRP2_DYNAMICS_FOUND)
   SET(PYTHON_MODULE dynamic_graph/sot/hrp2_14)
   PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
   PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
@@ -79,7 +81,7 @@ IF (hrp2-dynamics_FOUND)
 ENDIF()
 
 # Install dynamic_graph.sot.hrp2_10
-IF (hrp2-10-optimized_FOUND)
+IF (HRP2_10_OPTIMIZED_FOUND)
   SET(PYTHON_MODULE dynamic_graph/sot/hrp2_10)
   PYTHON_INSTALL_ON_SITE("${PYTHON_MODULE}" "__init__.py" )
   PYTHON_INSTALL_BUILD("${PYTHON_MODULE}" "robot.py" "${PYTHON_SITELIB}")
@@ -149,11 +151,11 @@ MACRO(build_hrp2_controller robotnumber)
 
 ENDMACRO()
 
-IF (hrp2-10-optimized_FOUND)
+IF (HRP2_10_OPTIMIZED_FOUND)
   build_hrp2_controller("10")
 ENDIF()
 
-IF (hrp2-dynamics_FOUND)
+IF (HRP2_DYNAMICS_FOUND)
   build_hrp2_controller("14")
 ENDIF()
 
