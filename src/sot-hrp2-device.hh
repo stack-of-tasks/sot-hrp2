@@ -74,6 +74,12 @@ protected:
   dynamicgraph::Signal <ml::Vector, int> accelerometerSOUT_;
   /// Rotation velocity measured by gyrometers
   dynamicgraph::Signal <ml::Vector, int> gyrometerSOUT_;
+  /// motor currents
+  dynamicgraph::Signal <ml::Vector, int> currentSOUT_;
+
+  /// proportional and derivative position-control gains
+  dynamicgraph::Signal <ml::Vector, int> p_gainsSOUT_;
+  dynamicgraph::Signal <ml::Vector, int> d_gainsSOUT_;
 
   /// Intermediate variables to avoid allocation during control
   ml::Vector mlforces;
@@ -83,5 +89,8 @@ protected:
   ml::Vector gyrometer_;
   std::vector<double> baseff_;
   ml::Vector torques_;
+  ml::Vector currents_;
+  ml::Vector p_gains_;
+  ml::Vector d_gains_;
 };
 #endif /* _SOT_HRP2Device_H_*/

@@ -38,6 +38,9 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   accelerometerSOUT_
   ("StackOfTasks(" + RobotName + ")::output(vector)::accelerometer"),
   gyrometerSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::gyrometer"),
+  currentSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::currents"),
+  p_gainsSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::p_gains"),
+  d_gainsSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::d_gains"),
   mlforces (6),
   pose (),
   accelerometer_ (3),
@@ -47,7 +50,8 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
 {
   sotDEBUGIN(25) ;
   for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
-  signalRegistration (robotState_ << accelerometerSOUT_ << gyrometerSOUT_);
+  signalRegistration (robotState_ << accelerometerSOUT_ << gyrometerSOUT_
+                      << currentSOUT_ << p_gainsSOUT_ << d_gainsSOUT_);
   ml::Vector data (3); data.setZero ();
   accelerometerSOUT_.setConstant (data);
   gyrometerSOUT_.setConstant (data);
@@ -149,6 +153,39 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
     pseudoTorqueSOUT.setTime(t);
   }
   
+  it = SensorsIn.find("currents");
+  if (it!=SensorsIn.end())
+  {
+    const std::vector<double>& currents = SensorsIn["currents"].getValues();
+    currents_.resize(currents.size());
+    for(std::size_t i = 0; i < currents.size(); ++i)
+      currents_ (i) = currents[i];
+    currentSOUT_.setConstant(currents_);
+    currentSOUT_.setTime(t);
+  }
+
+  it = SensorsIn.find("p_gains");
+  if (it!=SensorsIn.end())
+  {
+    const std::vector<double>& p_gains = SensorsIn["p_gains"].getValues();
+    p_gains_.resize(p_gains.size());
+    for(std::size_t i = 0; i < p_gains.size(); ++i)
+      p_gains_ (i) = p_gains[i];
+    p_gainsSOUT_.setConstant(p_gains_);
+    p_gainsSOUT_.setTime(t);
+  }
+
+  it = SensorsIn.find("d_gains");
+  if (it!=SensorsIn.end())
+  {
+    const std::vector<double>& d_gains = SensorsIn["d_gains"].getValues();
+    d_gains_.resize(d_gains.size());
+    for(std::size_t i = 0; i < d_gains.size(); ++i)
+      d_gains_ (i) = d_gains[i];
+    d_gainsSOUT_.setConstant(d_gains_);
+    d_gainsSOUT_.setTime(t);
+  }
+
   sotDEBUGOUT(25);
 }
 
