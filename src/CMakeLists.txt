@@ -102,7 +102,7 @@ MACRO(build_hrp2_device)
   PKG_CONFIG_USE_DEPENDENCY(${DEVICE_NAME} "dynamic-graph-python")
   PKG_CONFIG_USE_DEPENDENCY(${DEVICE_NAME} "sot-core")
 
-  ROSPACK_USE_DEPENDENCY(${DEVICE_NAME} "dynamic_graph_bridge")
+  PKG_CONFIG_USE_DEPENDENCY(${DEVICE_NAME} "dynamic_graph_bridge")
 
   IF(UNIX AND NOT APPLE)
     TARGET_LINK_LIBRARIES(${DEVICE_NAME} ${Boost_LIBRARIES})
@@ -137,7 +137,7 @@ MACRO(build_hrp2_controller robotnumber)
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic-graph-python")
   PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "sot-core")
 
-  ROSPACK_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
+  PKG_CONFIG_USE_DEPENDENCY(${CONTROLLER_NAME} "dynamic_graph_bridge")
 
   ADD_DEPENDENCIES(${CONTROLLER_NAME} "sot-hrp2-device")
   TARGET_LINK_LIBRARIES(${CONTROLLER_NAME} "sot-hrp2-device")
