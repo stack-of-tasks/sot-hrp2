@@ -50,7 +50,7 @@ SoTHRP2Controller::SoTHRP2Controller(std::string RobotName):
   device_(RobotName)
 {
 
-  std::cout << "Going through SoTHRP2Controller." << std::endl;
+  std::cout << "Going through SoTHRP2Controller for " <<RobotName<< std::endl;
   boost::thread thr(workThread,this);
   sotDEBUG(25) << __FILE__ << ":" 
 	       << __FUNCTION__ <<"(#" 

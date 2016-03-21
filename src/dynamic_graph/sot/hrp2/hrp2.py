@@ -17,15 +17,13 @@
 from __future__ import print_function
 
 import numpy as np
-from dynamic_graph.sot.core import \
-    FeatureGeneric, FeatureJointLimits, Task, Constraint, GainAdaptive, SOT
-from dynamic_graph.sot.dynamics import AngleEstimator
-from dynamic_graph import enableTrace, plug
 
-# from dynamic_graph.sot.dynamics.dynamic_hrp2 import DynamicHrp2
-# from dynamic_graph.sot.dynamics.dynamic_hrp2_10 import DynamicHrp2_10
-
+#Don't change this order
 from dynamic_graph.sot.dynamics.humanoid_robot import AbstractHumanoidRobot
+from dynamic_graph.ros import RosRobotModel
+
+from rospkg import RosPack
+
 
 # Internal helper tool.
 def matrixToTuple(M):
@@ -67,18 +65,16 @@ class Hrp2(AbstractHumanoidRobot):
         res = (config + 10*(0.,))
         return res
 
-    def __init__(self, name, modelDir, xmlDir, device, dynamicType,
+    def __init__(self, name, robotnumber,
+                 device = None,
                  tracer = None):
+        
         AbstractHumanoidRobot.__init__ (self, name, tracer)
 
         self.OperationalPoints.append('waist')
         self.OperationalPoints.append('chest')
         self.device = device
-        self.modelDir = modelDir
-        self.modelName = 'HRP2JRLmainsmall.wrl'
-        self.specificitiesPath = xmlDir + '/HRP2SpecificitiesSmall.xml'
-        self.jointRankPath = xmlDir + '/HRP2LinkJointRankSmall.xml'
-
+        
         self.AdditionalFrames.append(
             ("accelerometer",
              matrixToTuple(self.accelerometerPosition), "chest"))
@@ -90,22 +86,28 @@ class Hrp2(AbstractHumanoidRobot):
              self.forceSensorInLeftAnkle, "left-ankle"))
         self.AdditionalFrames.append(
             ("rightFootForceSensor",
-            self.forceSensorInRightAnkle, "right-ankle"))
+             self.forceSensorInRightAnkle, "right-ankle"))
+        self.OperationalPointsMap = {'left-wrist'  : 'LARM_JOINT5',
+                                     'right-wrist' : 'RARM_JOINT5',
+                                     'left-ankle'  : 'LLEG_JOINT5',
+                                     'right-ankle' : 'RLEG_JOINT5',
+                                     'gaze'        : 'HEAD_JOINT1',
+                                     'waist'       : 'WAIST',
+                                     'chest'       : 'CHEST_JOINT1'}
 
-        self.dynamic = self.loadModelFromJrlDynamics(
-            self.name + '_dynamic',
-            modelDir,
-            self.modelName,
-            self.specificitiesPath,
-            self.jointRankPath,
-            dynamicType)
+        self.dynamic = RosRobotModel("{0}_dynamic".format(name))
+
+
+
+        rospack = RosPack()
+        self.urdfPath = rospack.get_path('hrp2_{0}_description'.format(robotnumber)) + '/urdf/hrp2_{0}.urdf'.format(robotnumber)
+        self.dynamic.loadUrdf(self.urdfPath)
 
         self.dimension = self.dynamic.getDimension()
-        
+        self.dynamic.displayModel()
         self.plugVelocityFromDevice = True
-
         if self.dimension != len(self.halfSitting):
             raise RuntimeError("Dimension of half-sitting: {0} differs from dimension of robot: {1}".format (len(self.halfSitting), self.dimension))
         self.initializeRobot()
-
+        
 __all__ = [Hrp2]

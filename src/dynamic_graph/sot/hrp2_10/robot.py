@@ -18,9 +18,6 @@ from __future__ import print_function
 from dynamic_graph.sot.hrp2 import Hrp2
 import numpy as np
 
-from dynamic_graph.sot.hrp2.dynamic_hrp2_14 import DynamicHrp2_14
-
-hrp2_14_pkgdatarootdir = "@HRP2_14_PKGDATAROOTDIR@/hrp2-14"
 
 # Internal helper tool.
 def matrixToTuple(M):
@@ -46,42 +43,48 @@ class Robot (Hrp2):
         0., 0., 0., 0.,
 
         # Arms
-        0.261799, -0.17453, 0., -0.523599, 0., 0., 0.1,
-        0.261799, 0.17453,  0., -0.523599, 0., 0., 0.1,
+        0.261799, -0.17453, 0., -0.523599, 0., 0., 0.1, 0.261799,
+        0.261799, 0.17453,  0., -0.523599, 0., 0., 0.1, 0.261799,
         )
 
     def __init__(self, name,
-                 modelDir = hrp2_14_pkgdatarootdir,
-                 xmlDir = hrp2_14_pkgdatarootdir,
                  device = None,
                  tracer = None):
 
         # Define camera positions w.r.t gaze.
 
-        # These positions have been copied from hrp2.geom and
-        # roughly checked. Do not trust them too much.
+        # These positions have been copied from hrp2_10.urdf
+        # except for cameraTopLeftPosition and cameraTopRightPosition
         cameraBottomLeftPosition = np.matrix((
-                (0.98481, 0.00000, 0.17365, 0.035),
-                (0.,      1.,      0.,      0.072),
-                (-0.17365, 0.00000, 0.98481, 0.075 - 0.03),
+                (0.98703661, 0.05887354, 0.14930717, 0.0514675),
+                (-0.06015316, 0.99818088, 0.00406493, 0.06761652),
+                (-0.14879625, -0.01299353, 0.98878251, 0.06929336 - 0.03),
                 (0., 0., 0., 1.),
                 ))
         cameraBottomRightPosition = np.matrix((
-                (0.98481, 0.00000, 0.17365, 0.035),
-                (0.,      1.,      0.,     -0.072),
-                (-0.17365, 0.00000, 0.98481, 0.075 - 0.03),
+                (0.97634419, -0.04283205,  0.21193734,  0.05735882),
+                (0.04475292,  0.99898895, -0.00427252, -0.07566727),
+                (-0.21154006, 0.01365627,  0.97727392,  0.07390919 - 0.03),
                 (0., 0., 0., 1.),
                 ))
+        #very rough approximate coming from hrp2_14
         cameraTopLeftPosition = np.matrix((
                 (0.99920,  0.00120, 0.03997, 0.01),
                 (0.00000,  0.99955,-0.03000, 0.029),
                 (-0.03999, 0.02997, 0.99875, 0.145 - 0.03),
                 (0.,       0.,      0.,      1.),
                 ))
+        #very rough approximate coming from hrp2_14
         cameraTopRightPosition = np.matrix((
                 (0.99920,  0.00000, 0.03999,  0.01),
                 (0.00000,  1.00000, 0.00000, -0.029),
                 (-0.03999, 0.00000, 0.99920,  0.145 - 0.03),
+                (0.,       0.,      0.,       1.),
+                ))
+        cameraXtionRGBPosition = np.matrix((
+                (0.98162902,  0.02441221, 0.18923135,  0.0869229361),
+                (-0.02440555, 0.99969934, -0.00236575, 0.0149334883),
+                (-0.18923221, -0.002296, 0.98192968,  0.108828329 - 0.03),
                 (0.,       0.,      0.,       1.),
                 ))
 
@@ -96,7 +99,8 @@ class Robot (Hrp2):
              [ 0.,  0.,  0., 1.]])
 
         for camera in [cameraBottomLeftPosition, cameraBottomRightPosition,
-                       cameraTopLeftPosition, cameraTopRightPosition]:
+                       cameraTopLeftPosition, cameraTopRightPosition,
+                       cameraXtionRGBPosition]:
             camera[:] = camera * c1_M_c
 
         self.AdditionalFrames.append(
@@ -111,7 +115,10 @@ class Robot (Hrp2):
         self.AdditionalFrames.append(
                 ("cameraTopRight",
                  matrixToTuple(cameraTopRightPosition), "gaze"))
+        self.AdditionalFrames.append(
+                ("cameraXtionRGB",
+                 matrixToTuple(cameraXtionRGBPosition), "gaze"))
 
-        Hrp2.__init__(self, name, modelDir, xmlDir, device, DynamicHrp2_14, tracer)
+        Hrp2.__init__(self, name, "10", device, tracer)
 
 __all__ = ["Robot"]
