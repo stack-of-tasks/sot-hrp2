@@ -41,19 +41,18 @@ SETUP_PROJECT()
 # Search for dependencies.
 
 ADD_REQUIRED_DEPENDENCY("pinocchio")
-ADD_OPTIONAL_DEPENDENCY("hrp2-dynamics >= 1.5.0")
 ADD_OPTIONAL_DEPENDENCY("hrp2-10-optimized >= 1.0.1")
 
 ADD_OPTIONAL_DEPENDENCY("hrp2-10 >= 1.0.1-10")
 ADD_OPTIONAL_DEPENDENCY("hrp2-14 >= 1.8-6")
 
-ADD_REQUIRED_DEPENDENCY("dynamic-graph")
-ADD_REQUIRED_DEPENDENCY("sot-core")
+ADD_REQUIRED_DEPENDENCY("dynamic-graph >= 3.0.0")
+ADD_REQUIRED_DEPENDENCY("sot-core >= 3.0.0")
 ADD_REQUIRED_DEPENDENCY("sot-dynamic >= 3.1")
-ADD_REQUIRED_DEPENDENCY("dynamic-graph-python")
+ADD_REQUIRED_DEPENDENCY("dynamic-graph-python >= 3.0.0")
 
 ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge_msgs")
-ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge")
+ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge >= 3.0")
 # Search for dependencies.
 # Boost
 SET(BOOST_COMPONENTS filesystem system thread)
