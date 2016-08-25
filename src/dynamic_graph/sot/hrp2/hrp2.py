@@ -21,7 +21,7 @@ import numpy as np
 #Don't change this order
 from dynamic_graph.sot.dynamics.humanoid_robot import AbstractHumanoidRobot
 from dynamic_graph.ros import RosRobotModel
-
+import pinocchio as se3
 from rospkg import RosPack
 
 
@@ -66,8 +66,7 @@ class Hrp2(AbstractHumanoidRobot):
         return res
 
     def __init__(self, name, robotnumber,
-                 device = None,
-                 tracer = None):
+                 device = None, tracer = None):
         
         AbstractHumanoidRobot.__init__ (self, name, tracer)
 
@@ -97,12 +96,15 @@ class Hrp2(AbstractHumanoidRobot):
 
         self.dynamic = RosRobotModel("{0}_dynamic".format(name))
 
-
+        
 
         rospack = RosPack()
         self.urdfPath = rospack.get_path('hrp2_{0}_description'.format(robotnumber)) + '/urdf/hrp2_{0}.urdf'.format(robotnumber)
-        self.dynamic.loadUrdf(self.urdfPath)
 
+        self.pinocchioModel = se3.buildModelFromUrdf(self.urdfPath, se3.JointModelFreeFlyer())
+        self.pinocchioData = self.pinocchioModel.createData()
+        self.dynamic.setModel(self.pinocchioModel)
+        self.dynamic.setData(self.pinocchioData)
         self.dimension = self.dynamic.getDimension()
         self.dynamic.displayModel()
         self.plugVelocityFromDevice = True
