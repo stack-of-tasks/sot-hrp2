@@ -1,0 +1,34 @@
+language: cpp
+sudo: required
+compiler: gcc
+env:
+  global:
+  - APT_DEPENDENCIES="doxygen doxygen-latex libboost-all-dev libeigen3-dev liblapack-dev
+    libblas-dev gfortran python-dev python-sphinx python-numpy libbullet-dev ros-hydro-angles
+    ros-hydro-common-msgs
+    ros-hydro-control-msgs
+    ros-hydro-realtime-tools
+    ros-hydro-resource-retriever
+    ros-hydro-robot-state-publisher
+    ros-hydro-ros-base
+    ros-hydro-tf
+    ros-hydro-urdf
+    ros-hydro-urdfdom
+    ros-hydro-urdfdom-py"
+  - GIT_DEPENDENCIES="stack-of-tasks/pinocchio:devel
+    proyan/dynamic-graph proyan/dynamic-graph-python proyan/sot-core
+    proyan/sot-tools proyan/sot-dynamic:topic/sot-pinocchio "
+  - ROS_DISTRO=hydro
+  - ROS_GIT_DEPENDENCIES="proyan/dynamic_graph_bridge_msgs proyan/dynamic_graph_bridge"
+  - ALLOW_CATKINLINT_FAILURE=true
+notifications:
+  email:
+  - francois.keith@gmail.com
+branches:
+  only:
+  - master
+script: ./.travis/run build
+after_success: ./.travis/run after_success
+after_failure: ./.travis/run after_failure
+before_install: ./.travis/run dependencies/catkin; ./.travis/run before_install
+

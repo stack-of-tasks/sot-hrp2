@@ -24,9 +24,10 @@
 #include <dynamic-graph/linear-algebra.h>
 #include <sot/core/device.hh>
 #include <sot/core/abstract-sot-external-interface.hh>
-#include <sot/core/matrix-rotation.hh>
+#include <sot/core/matrix-geometry.hh>
 
 namespace dgsot=dynamicgraph::sot;
+namespace dg=dynamicgraph;
 
 class SoTHRP2Device: public 
     dgsot::Device
@@ -60,7 +61,7 @@ protected:
   double timestep_;
   
   /// \brief Previous robot configuration.
-  maal::boost::Vector previousState_;
+  dg::Vector previousState_;
   
   /// \brief Robot state provided by OpenHRP.
   ///
@@ -68,29 +69,29 @@ protected:
   /// account the stabilization step. Therefore, this usually
   /// does *not* match the state control input signal.
   ///
-  dynamicgraph::Signal<ml::Vector, int> robotState_;
+  dynamicgraph::Signal<dg::Vector, int> robotState_;
 
   /// Accelerations measured by accelerometers
-  dynamicgraph::Signal <ml::Vector, int> accelerometerSOUT_;
+  dynamicgraph::Signal <dg::Vector, int> accelerometerSOUT_;
   /// Rotation velocity measured by gyrometers
-  dynamicgraph::Signal <ml::Vector, int> gyrometerSOUT_;
+  dynamicgraph::Signal <dg::Vector, int> gyrometerSOUT_;
   /// motor currents
-  dynamicgraph::Signal <ml::Vector, int> currentSOUT_;
+  dynamicgraph::Signal <dg::Vector, int> currentSOUT_;
 
   /// proportional and derivative position-control gains
-  dynamicgraph::Signal <ml::Vector, int> p_gainsSOUT_;
-  dynamicgraph::Signal <ml::Vector, int> d_gainsSOUT_;
+  dynamicgraph::Signal <dg::Vector, int> p_gainsSOUT_;
+  dynamicgraph::Signal <dg::Vector, int> d_gainsSOUT_;
 
   /// Intermediate variables to avoid allocation during control
-  ml::Vector mlforces;
-  ml::Vector mlRobotState;
+  dg::Vector mlforces;
+  dg::Vector mlRobotState;
   dgsot::MatrixRotation pose;
-  ml::Vector accelerometer_;
-  ml::Vector gyrometer_;
+  dg::Vector accelerometer_;
+  dg::Vector gyrometer_;
   std::vector<double> baseff_;
-  ml::Vector torques_;
-  ml::Vector currents_;
-  ml::Vector p_gains_;
-  ml::Vector d_gains_;
+  dg::Vector torques_;
+  dg::Vector currents_;
+  dg::Vector p_gains_;
+  dg::Vector d_gains_;
 };
 #endif /* _SOT_HRP2Device_H_*/

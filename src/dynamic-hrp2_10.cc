@@ -32,7 +32,7 @@ namespace dynamicgraph
     namespace hrp2
     {
       DynamicHrp2_10::DynamicHrp2_10 (const std::string & name)
-	: Dynamic (name, false)
+	: Dynamic (name)
       {
 	sotDEBUGIN(15);
 	DynamicHrp2_10::buildModelHrp2 ();

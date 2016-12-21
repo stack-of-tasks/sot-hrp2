@@ -17,6 +17,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
+INCLUDE(cmake/eigen.cmake)
 INCLUDE(cmake/lapack.cmake)
 INCLUDE(cmake/cpack.cmake)
 INCLUDE(cmake/ros.cmake)
@@ -38,30 +39,29 @@ SET(PKG_CONFIG_ADDITIONAL_VARIABLES
 SETUP_PROJECT()
 
 # Search for dependencies.
-ADD_REQUIRED_DEPENDENCY("jrl-mathtools")
-ADD_REQUIRED_DEPENDENCY("jrl-mal >= 1.9.0")
 
-ADD_REQUIRED_DEPENDENCY("jrl-dynamics >= 1.19.0")
-ADD_OPTIONAL_DEPENDENCY("hrp2-dynamics >= 1.5.0")
+ADD_REQUIRED_DEPENDENCY("pinocchio")
 ADD_OPTIONAL_DEPENDENCY("hrp2-10-optimized >= 1.0.1")
 
 ADD_OPTIONAL_DEPENDENCY("hrp2-10 >= 1.0.1-10")
 ADD_OPTIONAL_DEPENDENCY("hrp2-14 >= 1.8-6")
 
-ADD_REQUIRED_DEPENDENCY("dynamic-graph")
-ADD_REQUIRED_DEPENDENCY("sot-core")
-ADD_REQUIRED_DEPENDENCY("sot-dynamic >= 2.8")
-ADD_REQUIRED_DEPENDENCY("dynamic-graph-python")
+ADD_REQUIRED_DEPENDENCY("dynamic-graph >= 3.0.0")
+ADD_REQUIRED_DEPENDENCY("sot-core >= 3.0.0")
+ADD_REQUIRED_DEPENDENCY("sot-dynamic >= 3.1")
+ADD_REQUIRED_DEPENDENCY("dynamic-graph-python >= 3.0.0")
 
 ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge_msgs")
-ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge")
+ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge >= 3.0")
 # Search for dependencies.
 # Boost
 SET(BOOST_COMPONENTS filesystem system thread)
 SEARCH_FOR_BOOST()
+SEARCH_FOR_EIGEN()
 
 # Handle rpath necessary to handle ROS multiplace packages
 # libraries inclusion
+SET(CMAKE_INSTALL_LIBDIR lib)
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
