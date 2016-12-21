@@ -39,27 +39,6 @@ FUNCTION(COMPILE_PLUGIN NAME SOURCES ENTITIES)
     )
 ENDFUNCTION()
 
-# Compile plug-ins.
-#IF (HRP2_DYNAMICS_FOUND)
-#  MESSAGE(STATUS "Add dynamic-hrp2_14 plugin")
-#  COMPILE_PLUGIN(dynamic-hrp2_14 dynamic-hrp2_14.cc DynamicHrp2_14)
-#  PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_14 hrp2-dynamics)
-#ENDIF()
-
-#IF (HRP2_10_OPTIMIZED_FOUND)
-#  MESSAGE(STATUS "Add dynamic-hrp2_10 plugin")
-#  COMPILE_PLUGIN(dynamic-hrp2_10 dynamic-hrp2_10.cc DynamicHrp2_10)
-#  PKG_CONFIG_USE_DEPENDENCY(dynamic-hrp2_10 hrp2-10-optimized)
-#ENDIF()
-
-#IF (HRP2_10_OPTIMIZED_FOUND)
-#  CONFIG_FILES(dynamic_graph/sot/hrp2_10/robot.py)
-#ENDIF()
-
-#IF (HRP2_DYNAMICS_FOUND)
-#  CONFIG_FILES(dynamic_graph/sot/hrp2_14/robot.py)
-#ENDIF()
-
 # Install Python files.
 SET(PYTHON_MODULE_DIR
   ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_graph/sot/hrp2)

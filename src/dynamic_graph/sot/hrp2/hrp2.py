@@ -106,10 +106,9 @@ class Hrp2(AbstractHumanoidRobot):
         self.dynamic.setModel(self.pinocchioModel)
         self.dynamic.setData(self.pinocchioData)
         self.dimension = self.dynamic.getDimension()
-        self.dynamic.displayModel()
         self.plugVelocityFromDevice = True
         if self.dimension != len(self.halfSitting):
             raise RuntimeError("Dimension of half-sitting: {0} differs from dimension of robot: {1}".format (len(self.halfSitting), self.dimension))
         self.initializeRobot()
-        
+        self.dynamic.displayModel()
 __all__ = [Hrp2]
