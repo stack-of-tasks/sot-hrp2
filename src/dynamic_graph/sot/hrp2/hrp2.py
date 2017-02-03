@@ -19,7 +19,7 @@ from __future__ import print_function
 import numpy as np
 
 #Don't change this order
-from dynamic_graph.sot.dynamics.humanoid_robot import AbstractHumanoidRobot
+from dynamic_graph.sot.dynamics_pinocchio.humanoid_robot import AbstractHumanoidRobot
 from dynamic_graph.ros import RosRobotModel
 import pinocchio as se3
 from rospkg import RosPack
@@ -35,7 +35,7 @@ def matrixToTuple(M):
 
 class Hrp2(AbstractHumanoidRobot):
     """
-    This class instanciates a Hrp2 robot
+    This class instantiates a Hrp2 robot
     """
 
     forceSensorInLeftAnkle =  ((1.,0.,0.,0.),
