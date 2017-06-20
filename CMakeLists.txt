@@ -48,7 +48,7 @@ ADD_OPTIONAL_DEPENDENCY("hrp2-14 >= 1.8-6")
 
 ADD_REQUIRED_DEPENDENCY("dynamic-graph >= 3.0.0")
 ADD_REQUIRED_DEPENDENCY("sot-core >= 3.0.0")
-ADD_REQUIRED_DEPENDENCY("sot-dynamic >= 3.1")
+ADD_REQUIRED_DEPENDENCY("sot-dynamic-pinocchio >= 3.1")
 ADD_REQUIRED_DEPENDENCY("dynamic-graph-python >= 3.0.0")
 
 ADD_REQUIRED_DEPENDENCY("dynamic_graph_bridge_msgs")
