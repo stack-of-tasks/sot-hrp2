@@ -48,6 +48,8 @@ class SoTHRP2Controller: public
 
   void getControl(std::map<std::string, dgsot::ControlValues> &anglesOut);
 
+  void setSecondOrderIntegration(void);
+
   /// Embedded python interpreter accessible via Corba
   boost::shared_ptr<dynamicgraph::Interpreter> interpreter_;
 

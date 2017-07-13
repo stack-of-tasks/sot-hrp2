@@ -70,6 +70,11 @@ setupSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
   device_.setupSetSensors(SensorsIn);
 }
 
+void SoTHRP2Controller::
+setSecondOrderIntegration(void)
+{
+  device_.setSecondOrderIntegration();
+}
 
 void SoTHRP2Controller::
 nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
@@ -148,5 +153,3 @@ startupPython()
 
   aof.close();
 }
-
-
