@@ -98,8 +98,10 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
   }
 
   it = SensorsIn.find("attitude");
+  bool attitudeSensorFound_ = false;
   if (it!=SensorsIn.end())
   {
+    attitudeSensorFound_ = true;
     const vector<double>& attitude = it->second.getValues ();
     for (unsigned int i = 0; i < 3; ++i)
       for (unsigned int j = 0; j < 3; ++j)
@@ -108,13 +110,28 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
     attitudeSOUT.setTime (t);
   }
 
+  it = SensorsIn.find("base_position");
+  bool ffPositionSensorFound_ = false;
+  Eigen::Vector3d base_p;
+  if (it!=SensorsIn.end())
+  {
+    ffPositionSensorFound_ = true;
+    const vector<double>& baseposition = it->second.getValues ();
+    base_p << baseposition[0], baseposition[1], baseposition[2];
+  }
+
   it = SensorsIn.find("joints");
   if (it!=SensorsIn.end())
   {
     const vector<double>& anglesIn = it->second.getValues();
     mlRobotState.resize (anglesIn.size () + 6);
-    for (unsigned i = 0; i < 6; ++i)
-      mlRobotState (i) = 0.;
+    if (ffPositionSensorFound_ == true && attitudeSensorFound_ == true) {
+      mlRobotState.head<3>() = base_p;
+      mlRobotState.segment<3>(3) = pose.eulerAngles(2,1,0).reverse();
+    }
+    else
+      mlRobotState.head<6>().setZero();
+
     for (unsigned i = 0; i < anglesIn.size(); ++i)
       mlRobotState (i + 6) = anglesIn[i];
     robotState_.setConstant(mlRobotState);
