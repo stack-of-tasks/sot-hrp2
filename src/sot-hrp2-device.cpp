@@ -265,7 +265,7 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 
   for(unsigned int i=6; i < state_.size();++i)
     controlOut_[i-6] = state_(i);
-  controlOut["joints"].setValues(controlOut_);
+  controlOut["control"].setValues(controlOut_);
 
   // Read zmp reference from input signal if plugged
   int time = controlSIN.getTime ();
