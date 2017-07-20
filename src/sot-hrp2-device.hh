@@ -63,14 +63,6 @@ protected:
   /// \brief Previous robot configuration.
   dg::Vector previousState_;
   
-  /// \brief Robot state provided by OpenHRP.
-  ///
-  /// This corresponds to the real encoders values and take into
-  /// account the stabilization step. Therefore, this usually
-  /// does *not* match the state control input signal.
-  ///
-  dynamicgraph::Signal<dg::Vector, int> robotState_;
-
   /// Accelerations measured by accelerometers
   dynamicgraph::Signal <dg::Vector, int> accelerometerSOUT_;
   /// Rotation velocity measured by gyrometers
@@ -85,6 +77,7 @@ protected:
   /// Intermediate variables to avoid allocation during control
   dg::Vector mlforces;
   dg::Vector mlRobotState;
+  dg::Vector robotVelocity;
   dgsot::MatrixRotation pose;
   dg::Vector accelerometer_;
   dg::Vector gyrometer_;
