@@ -77,6 +77,12 @@ setSecondOrderIntegration(void)
 }
 
 void SoTHRP2Controller::
+setNoIntegration(void)
+{
+  device_.setNoIntegration();
+}
+
+void SoTHRP2Controller::
 nominalSetSensors(map<string,dgsot::SensorValues> &SensorsIn)
 {
   device_.nominalSetSensors(SensorsIn);

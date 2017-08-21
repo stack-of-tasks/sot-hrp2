@@ -34,7 +34,6 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
   dgsot::Device(RobotName),
   timestep_(TIMESTEP_DEFAULT),
   previousState_ (),
-  robotState_ ("StackOfTasks(" + RobotName + ")::output(vector)::robotState"),
   accelerometerSOUT_
   ("StackOfTasks(" + RobotName + ")::output(vector)::accelerometer"),
   gyrometerSOUT_ ("StackOfTasks(" + RobotName + ")::output(vector)::gyrometer"),
@@ -50,7 +49,7 @@ SoTHRP2Device::SoTHRP2Device(std::string RobotName):
 {
   sotDEBUGIN(25) ;
   for( int i=0;i<4;++i ) { withForceSignals[i] = true; }
-  signalRegistration (robotState_ << accelerometerSOUT_ << gyrometerSOUT_
+  signalRegistration ( accelerometerSOUT_ << gyrometerSOUT_
                       << currentSOUT_ << p_gainsSOUT_ << d_gainsSOUT_);
   dg::Vector data (3); data.setZero ();
   accelerometerSOUT_.setConstant (data);
@@ -138,6 +137,36 @@ void SoTHRP2Device::setSensors(map<string,dgsot::SensorValues> &SensorsIn)
     robotState_.setTime(t);
   }
 
+  it = SensorsIn.find("base_velocity");
+  bool ffVelSensorFound_ = false;
+  Eigen::VectorXd base_v(6);
+  if (it!=SensorsIn.end())
+  {
+    ffVelSensorFound_ = true;
+    const vector<double>& basevel = it->second.getValues ();
+    base_v << basevel[0], basevel[1], basevel[2], 
+      basevel[3], basevel[4], basevel[5];
+  }
+
+  it = SensorsIn.find("joint_velocities");
+  if (it!=SensorsIn.end())
+  {
+    const vector<double>& velIn = it->second.getValues();
+    robotVelocity.resize (velIn.size () + 6);
+    if (ffVelSensorFound_ == true) {
+      robotVelocity.head<6>() = base_v;
+    }
+    else
+      robotVelocity.head<6>().setZero();
+
+    for (unsigned i = 0; i < velIn.size(); ++i)
+      robotVelocity (i + 6) = velIn[i];
+    robotVelocity_.setConstant(robotVelocity);
+    robotVelocity_.setTime(t);
+  }
+
+
+
   it = SensorsIn.find("accelerometer_0");
   if (it!=SensorsIn.end())
   {
@@ -224,8 +253,7 @@ void SoTHRP2Device::cleanupSetSensors(map<string, dgsot::SensorValues> &SensorsI
 void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
 {
   sotDEBUGIN(25) ;
-  vector<double> anglesOut;
-  anglesOut.resize(state_.size());
+  vector<double> controlOut_;
   
   // Integrate control
   increment(timestep_);
@@ -233,14 +261,11 @@ void SoTHRP2Device::getControl(map<string,dgsot::ControlValues> &controlOut)
   sotDEBUG (25) << "diff  = " << ((previousState_.size() == state_.size())?
                                     (state_ - previousState_) : state_ ) << std::endl;
   previousState_ = state_;
-
-  // Specify the joint values for the controller.
-  if (anglesOut.size()!=state_.size()-6)
-    anglesOut.resize(state_.size()-6);
+  controlOut_.resize(state_.size()-6);
 
   for(unsigned int i=6; i < state_.size();++i)
-    anglesOut[i-6] = state_(i);
-  controlOut["joints"].setValues(anglesOut);
+    controlOut_[i-6] = state_(i);
+  controlOut["control"].setValues(controlOut_);
 
   // Read zmp reference from input signal if plugged
   int time = controlSIN.getTime ();
