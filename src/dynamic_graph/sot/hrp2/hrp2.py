@@ -99,7 +99,7 @@ class Hrp2(AbstractHumanoidRobot):
         
 
         rospack = RosPack()
-        self.urdfPath = rospack.get_path('hrp2_{0}_description'.format(robotnumber)) + '/urdf/hrp2_{0}.urdf'.format(robotnumber)
+        self.urdfPath = rospack.get_path('hrp2_{0}_description'.format(robotnumber)) + '/urdf/hrp2_{0}_reduced.urdf'.format(robotnumber)
 
         self.pinocchioModel = se3.buildModelFromUrdf(self.urdfPath, se3.JointModelFreeFlyer())
         self.pinocchioData = self.pinocchioModel.createData()
