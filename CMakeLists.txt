@@ -19,12 +19,12 @@ INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/eigen.cmake)
 INCLUDE(cmake/lapack.cmake)
-INCLUDE(cmake/cpack.cmake)
 INCLUDE(cmake/ros.cmake)
 
+SET(PROJECT_NAMESPACE stack-of-tasks)
 SET(PROJECT_NAME sot-hrp2)
 SET(PROJECT_DESCRIPTION "dynamic-graph package for HRP-2 robot")
-SET(PROJECT_URL "http://github.com/laas/sot-hrp2")
+SET(PROJECT_URL "http://github.com/${PROJECT_NAMESPACE}/${PROJECT_NAME}")
 
 SET(CUSTOM_HEADER_DIR "${PROJECT_NAME}")
 
@@ -72,4 +72,3 @@ ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
 
 SETUP_PROJECT_FINALIZE()
-SETUP_PROJECT_CPACK()
