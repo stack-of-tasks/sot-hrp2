@@ -18,6 +18,7 @@
 #include <fstream>
 #include <map>
 
+#include <pinocchio/fwd.hpp>
 #include <sot/core/debug.hh>
 
 #include "sot-hrp2-device.hh"

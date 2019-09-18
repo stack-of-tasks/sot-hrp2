@@ -15,6 +15,7 @@
  *
  */
 
+#include <pinocchio/fwd.hpp>
 #include <sot/core/debug.hh>
 #include <sot/core/exception-abstract.hh>
 #include <dynamic_graph_bridge/ros_init.hh>

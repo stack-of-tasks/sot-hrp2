@@ -15,6 +15,7 @@
  *
  */
 
+#include <pinocchio/fwd.hpp>
 #include <sot/core/debug.hh>
 
 #define ROBOTNAME std::string("HRP2JRL")
