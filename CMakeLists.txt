@@ -13,18 +13,18 @@
 # received a copy of the GNU Lesser General Public License along with
 # sot-hrp2. If not, see <http://www.gnu.org/licenses/>.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+
+SET(PROJECT_NAMESPACE stack-of-tasks)
+SET(PROJECT_NAME sot-hrp2)
+SET(PROJECT_DESCRIPTION "dynamic-graph package for HRP-2 robot")
+SET(PROJECT_URL "http://github.com/${PROJECT_NAMESPACE}/${PROJECT_NAME}")
 
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/eigen.cmake)
 INCLUDE(cmake/lapack.cmake)
 INCLUDE(cmake/ros.cmake)
-
-SET(PROJECT_NAMESPACE stack-of-tasks)
-SET(PROJECT_NAME sot-hrp2)
-SET(PROJECT_DESCRIPTION "dynamic-graph package for HRP-2 robot")
-SET(PROJECT_URL "http://github.com/${PROJECT_NAMESPACE}/${PROJECT_NAME}")
 
 SET(CUSTOM_HEADER_DIR "${PROJECT_NAME}")
 SET(PROJECT_SUFFIX "-v3")
@@ -37,7 +37,8 @@ SET(PKG_CONFIG_ADDITIONAL_VARIABLES
   plugindir
   )
 
-SETUP_PROJECT()
+COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
+PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 
 # Search for dependencies.
 
@@ -71,5 +72,3 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 # Add subdirectories.
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
-
-SETUP_PROJECT_FINALIZE()
