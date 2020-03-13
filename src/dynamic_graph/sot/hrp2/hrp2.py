@@ -19,7 +19,7 @@ from __future__ import print_function
 import numpy as np
 
 #Don't change this order
-from dynamic_graph.sot.dynamics_pinocchio.humanoid_robot import AbstractHumanoidRobot
+from dynamic_graph.sot.dynamic_pinocchio.humanoid_robot import AbstractHumanoidRobot
 from dynamic_graph.ros import RosRobotModel
 import pinocchio as se3
 from rospkg import RosPack
@@ -67,13 +67,13 @@ class Hrp2(AbstractHumanoidRobot):
 
     def __init__(self, name, robotnumber,
                  device = None, tracer = None):
-        
+
         AbstractHumanoidRobot.__init__ (self, name, tracer)
 
         self.OperationalPoints.append('waist')
         self.OperationalPoints.append('chest')
         self.device = device
-        
+
         self.AdditionalFrames.append(
             ("accelerometer",
              matrixToTuple(self.accelerometerPosition), "chest"))
@@ -96,7 +96,7 @@ class Hrp2(AbstractHumanoidRobot):
 
         self.dynamic = RosRobotModel("{0}_dynamic".format(name))
 
-        
+
 
         rospack = RosPack()
         self.urdfPath = rospack.get_path('hrp2_{0}_description'.format(robotnumber)) + '/urdf/hrp2_{0}_reduced.urdf'.format(robotnumber)
