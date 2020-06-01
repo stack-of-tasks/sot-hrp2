@@ -1,8 +1,8 @@
 sot-hrp2
 ===========
 
-[![Pipeline status](https://gepgitlab.laas.fr/stack-of-tasks/sot-hrp2/badges/master/pipeline.svg)](https://gepgitlab.laas.fr/stack-of-tasks/sot-hrp2/commits/master)
-[![Coverage report](https://gepgitlab.laas.fr/stack-of-tasks/sot-hrp2/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/stack-of-tasks/sot-hrp2/master/coverage/)
+[![Pipeline status](https://gitlab.laas.fr/stack-of-tasks/sot-hrp2/badges/master/pipeline.svg)](https://gitlab.laas.fr/stack-of-tasks/sot-hrp2/commits/master)
+[![Coverage report](https://gitlab.laas.fr/stack-of-tasks/sot-hrp2/badges/master/coverage.svg?job=doc-coverage)](http://projects.laas.fr/gepetto/doc/stack-of-tasks/sot-hrp2/master/coverage/)
 
 
 This packages provides a generic Stack Of Tasks library
